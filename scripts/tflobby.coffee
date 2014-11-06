@@ -27,3 +27,5 @@ module.exports = (robot) ->
   robot.respond /(previous|last game|lastgame|previous game)/i, (msg) -> lobby.previous(robot, msg)
   
   robot.respond /top (maps|players)/i, (msg) -> lobby.top(robot, msg)
+
+  robot.respond /(shout|scream|announce|this command is dumb)/i, (msg) -> lobby.shout(robot, msg)
