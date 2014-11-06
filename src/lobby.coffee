@@ -1,7 +1,7 @@
 Rcon = require('./rcon')
 
 responses =
-  affirmative = [
+  affirmative: [
     'as you wish, master.'
     'i exist to serve.'
     'yes ma\'am!'
@@ -15,7 +15,7 @@ responses =
     'you can be my wingman any time.'
     'tfbot is credit to team!'
   ]
-  negative = [
+  negative: [
     'meh'
     'oops'
     'awww'
@@ -25,7 +25,7 @@ responses =
     'bleh'
     'that\'s a negative, ghost-rider, the pattern is full'
   ]
-  mistake = [
+  mistake: [
     'awkwaaard, but,'
     'silly-billy!'
     'my, oh my, you are a funny one.'
