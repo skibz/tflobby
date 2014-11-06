@@ -111,12 +111,11 @@ maps = [
   'koth_pro_viaduct_rc4'
 ]
 
-filterMaps = ((desired, mapList) ->
+filterMaps = (desired, mapList) ->
 
   mapList.filter((map) -> map.indexOf(desired) isnt -1)
-)
 
-newLobby = ((map, principal, server) ->
+newLobby = (map, principal, server) ->
   {
     createdAt: (new Date()).toJSON()
     map: map
@@ -125,9 +124,8 @@ newLobby = ((map, principal, server) ->
     participants: {}
     finalising: false
   }
-)
 
-finalising = ((robot, msg) ->
+finalising = (robot, msg) ->
   lobby = robot.brain.get('lobby')
   server = servers[lobby.server]
 
@@ -170,9 +168,8 @@ finalising = ((robot, msg) ->
     lobby.finalising = false
     robot.brain.set('lobby', lobby)
     return msg.send("#{msg.random(responses.mistake)}  it looks like we didn't find enough players in time. but never fear! tfbot is here to comfort you while you cry yourself to sleep.")
-)
 
-exports.onLeave = ((robot, msg) ->
+exports.onLeave = (robot, msg) ->
   lobby = robot.brain.get('lobby')
   return unless lobby?
 
@@ -183,9 +180,8 @@ exports.onLeave = ((robot, msg) ->
     delete lobby.participants[user]
     robot.brain.set('lobby', lobby)
     return msg.send("|| #{lobby.server} | #{lobby.map} | #{players.length}/12 | [ #{players.join(', ')} ] ||")
-)
 
-exports.rconSay = ((robot, msg) ->
+exports.rconSay = (robot, msg) ->
   user = msg.message.user.id
 
   server = servers[msg.match[3].toLowerCase()]
@@ -203,9 +199,8 @@ exports.rconSay = ((robot, msg) ->
     return msg.reply("#{msg.random(responses.mistake)} that's not a valid server...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't to do that...")
-)
 
-exports.rconRoster = ((robot, msg) ->
+exports.rconRoster = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'rcon')
@@ -224,9 +219,8 @@ exports.rconRoster = ((robot, msg) ->
     return msg.reply("#{msg.random(responses.mistake)} there's no previous game data. creepy...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't to do that...")
-)
 
-exports.rconMap = ((robot, msg) ->
+exports.rconMap = (robot, msg) ->
   user = msg.message.user.id
   server = servers[msg.match[2].toLowerCase()]
   map = msg.match[3].toLowerCase()
@@ -245,9 +239,8 @@ exports.rconMap = ((robot, msg) ->
     return msg.reply("#{msg.random(responses.mistake)} i don't know that map...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't to do that...")
-)
 
-exports.sg = ((robot, msg) ->
+exports.sg = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
@@ -271,9 +264,8 @@ exports.sg = ((robot, msg) ->
     return msg.send("|| #{created.map} | #{Object.keys(created.participants).length}/12 | [  ] ||")
 
   return msg.send("#{msg.random(responses.mistake)} you can't to do that...")
-)
 
-exports.cg = ((robot, msg) ->
+exports.cg = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
@@ -285,27 +277,11 @@ exports.cg = ((robot, msg) ->
     return msg.send("#{msg.random(responses.negative)}, pickup cancelled...")
 
   return msg.send("#{msg.random(responses.negative)}, you can't to do that...")
-)
 
-exports.add = ((robot, msg) ->
+exports.add = (robot, msg) ->
   user = msg.message.user.id
   lobby = robot.brain.get('lobby')
-  
-  # if msg.match[1] is 'me'
-  #   target = user
-  # else
-  #   # check that the sender didn't tab-complete the name
-  #   nameLength = msg.match[1].length
-    
-  #   if msg.match[1].charAt(nameLength - 1) is ' '
-  #     target = msg.match[1].substring(0, nameLength - 1)
-  #   else
-  #     target = msg.match[1]
-  
   target = if msg.match[1] is 'me' then user else msg.match[1].trim()
-
-  console.log 'trimmed', "'#{target}'"
-  console.log 'not trimmed', "'#{msg.match[1]}'"
 
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
 
@@ -331,14 +307,10 @@ exports.add = ((robot, msg) ->
     return msg.reply("#{msg.random(responses.mistake)} the pickup is already full...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't to do that...")
-)
 
-exports.rem = ((robot, msg) ->
+exports.rem = (robot, msg) ->
   user = msg.message.user.id
   target = if msg.match[1] is 'me' then user else msg.match[1].trim()
-
-  console.log 'trimmed', "'#{target}'"
-  console.log 'not trimmed', "'#{msg.match[1]}'"
 
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
     lobby = robot.brain.get('lobby')
@@ -355,9 +327,8 @@ exports.rem = ((robot, msg) ->
     return msg.reply("#{if msg.match[1] is 'me' then 'you\'re not' else target + '\'s not'} added to the pickup...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't do that...")
-)
 
-exports.map = ((robot, msg) ->
+exports.map = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
@@ -381,9 +352,8 @@ exports.map = ((robot, msg) ->
     return msg.reply("#{msg.random(responses.affirmative)} changing map to #{map}...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't do that...")
-)
 
-exports.server = ((robot, msg) ->
+exports.server = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
@@ -399,22 +369,19 @@ exports.server = ((robot, msg) ->
     return msg.reply("#{msg.random(responses.mistake)} #{msg.match[1]} isn't a valid server...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't do that...")
-)
 
-exports.status = ((robot, msg) ->
+exports.status = (robot, msg) ->
   lobby = robot.brain.get('lobby')
   return msg.reply("#{msg.random(responses.mistake)} there\'s currently no pickup...") unless lobby?
   players = Object.keys(lobby.participants)
   return msg.send("|| #{lobby.server} | #{lobby.map} | #{players.length}/12 | [ #{players.join(', ')} ] ||")
-)
 
-exports.previous = ((robot, msg) ->
+exports.previous = (robot, msg) ->
   previous = robot.brain.get('previous')
   return msg.send("#{msg.random(responses.negative)}, no previous match data...") unless previous?
   return msg.send("|| #{previous.principal} | #{previous.server} | #{previous.map} | [ #{Object.keys(previous.participants).join(', ')} ] | #{new Date(previous.createdAt).toString()} ||")
-)
 
-exports.top = ((robot, msg) ->
+exports.top = (robot, msg) ->
   today = robot.brain.get('today')
 
   return msg.send("#{msg.random(responses.negative)}, i haven't captured any daily data yet...") unless today?
@@ -436,4 +403,3 @@ exports.top = ((robot, msg) ->
     response += " #{player}: #{played} |" for player, played of today.players
 
   return msg.send("#{response}|")
-)
