@@ -290,7 +290,22 @@ exports.cg = ((robot, msg) ->
 exports.add = ((robot, msg) ->
   user = msg.message.user.id
   lobby = robot.brain.get('lobby')
+  
+  # if msg.match[1] is 'me'
+  #   target = user
+  # else
+  #   # check that the sender didn't tab-complete the name
+  #   nameLength = msg.match[1].length
+    
+  #   if msg.match[1].charAt(nameLength - 1) is ' '
+  #     target = msg.match[1].substring(0, nameLength - 1)
+  #   else
+  #     target = msg.match[1]
+  
   target = if msg.match[1] is 'me' then user else msg.match[1].trim()
+
+  console.log 'trimmed', "'#{target}'"
+  console.log 'not trimmed', "'#{msg.match[1]}'"
 
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
 
@@ -321,6 +336,9 @@ exports.add = ((robot, msg) ->
 exports.rem = ((robot, msg) ->
   user = msg.message.user.id
   target = if msg.match[1] is 'me' then user else msg.match[1].trim()
+
+  console.log 'trimmed', "'#{target}'"
+  console.log 'not trimmed', "'#{msg.match[1]}'"
 
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
     lobby = robot.brain.get('lobby')
