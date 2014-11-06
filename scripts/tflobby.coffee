@@ -1,5 +1,40 @@
 lobby = require('../src/lobby')
 
+# Description:
+#   exposes a set of commands for handling team fortress lobbies
+#
+# Dependencies:
+#   "simple-rcon": "*"
+#
+# Configuration:
+#   TFLOBBY_MAPS - a comma separated list of map names.
+#   TFLOBBY_RCON_SERVERNAME - the rcon password to use in rcon commands. replace "SERVERNAME" with any identifier you wish.
+#   ANTINO_AUTH_KEY - not for public use.
+#   ANTINO_ANNOUNCE_ENDPOINT - not for public use.
+#   ANTINO_STEAM_GROUP - not for public use.
+#
+# Commands:
+#   hubot rcon [say|message|msg] <message> on <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
+#   hubot rcon [list|the list|roster|players] on <server> - sends the player roster from the previous lobby to <server>. limited to `rcon` roles.
+#   hubot rcon [change map|changelevel|map] on <server> to <mapname> - changes the map on <server> to <mapname>. limited to `rcon` roles.
+#   hubot [sg|new] <mapname> - creates a new lobby with the map set to <mapname>. limited to `officer` roles.
+#   hubot [cg|kill] - cancels a running lobby. limited to `officer` roles.
+#   hubot add <me|user> - adds <user> to the lobby. addition of other users is limited to `officer` roles.
+#   hubot rem <me|user> - removes <user> from the lobby. removal of other users is limited to `officer` roles.
+#   hubot map <mapname> - changes the lobby map to <mapname>. limited to `officer` roles.
+#   hubot server <servername> - changes the lobby server to <servername>. limited to `officer` roles.
+#   hubot [status|games] - reports the lobby status
+#   hubot [previous|last game|lastgame|previous game] - reports the previous lobby status
+#   hubot top <maps|players> - reports the daily counter data accumulated for either maps or players
+#   hubot [shout|scream|announce|this command is dumb] - reports the current lobby status to the configured steam group via the antino.co.za web service. limited to `officer` roles.
+#
+# Notes:
+#   regarding the ANTINO env vars, if (as a third-party) you wish to use 
+#   my service for announcing messages remotely in a steam group, then 
+#   don't hesitate to contact me.
+#
+# Author:
+#   skibz
 module.exports = (robot) ->
   
   robot.leave (msg) -> lobby.onLeave(robot, msg)

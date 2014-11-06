@@ -46,70 +46,73 @@ servers =
     port: 27095
     tv: ''
     password: 'games'
-    rcon: process.env.RCON_IS1 ? ''
+    rcon: process.env.TFLOBBY_RCON_IS1 ? ''
   is2:
     name: 'is2'
     host: '196.38.180.26'
     port: 27115
     tv: ''
     password: 'games'
-    rcon: process.env.RCON_IS2 ? ''
+    rcon: process.env.TFLOBBY_RCON_IS2 ? ''
   mweb1:
     name: 'mweb1'
     host: '152.111.192.250'
     port: 27015
     tv: '152.111.192.250:27030'
     password: 'games'
-    rcon: process.env.RCON_MWEB1 ? ''
+    rcon: process.env.TFLOBBY_RCON_MWEB1 ? ''
   mweb2:
     name: 'mweb2'
     host: '197.80.200.27'
     port: 27015
     tv: '197.80.200.27:27030'
     password: 'games'
-    rcon: process.env.RCON_MWEB2 ? ''
+    rcon: process.env.TFLOBBY_RCON_MWEB2 ? ''
   mweb3:
     name: 'mweb3'
     host: '152.111.192.253'
     port: 27017
     tv: '152.111.192.253:27030'
     password: 'games'
-    rcon: process.env.RCON_MWEB3 ? ''
+    rcon: process.env.TFLOBBY_RCON_MWEB3 ? ''
   mweb4:
     name: 'mweb4'
     host: '197.80.200.34'
     port: 27015
     tv: '197.80.200.34:27030'
     password: 'games'
-    rcon: process.env.RCON_MWEB4 ? ''
+    rcon: process.env.TFLOBBY_RCON_MWEB4 ? ''
   mweb5:
     name: 'mweb5',
     host: '197.80.200.21'
     port: 27015
     tv: '197.80.200.21:27030'
     password: 'games'
-    rcon: process.env.RCON_MWEB5 ? ''
+    rcon: process.env.TFLOBBY_RCON_MWEB5 ? ''
 
 serverList = Object.keys servers
 
-maps = [
-  'cp_gravelpit',
-  'cp_badlands',
-  'cp_freight_final1',
-  'cp_granary',
-  'cp_gullywash_final1',
-  'cp_process_final',
-  'cp_snakewater_final1',
-  'cp_well',
-  'cp_follower',
-  'cp_intermodal_g1f',
-  'cp_metalworks_rc5',
-  'cp_prolane_v4',
-  'cp_sunshine_rc1a',
-  'cp_warmfront',
-  'ctf_turbine_pro_rc2',
-  'koth_pro_viaduct_rc4'
-]
+if process.env.TFLOBBY_MAPS
+  maps = process.env.TFBOT_MAPS.split(',')
+else
+  maps = [
+    'cp_gravelpit',
+    'cp_badlands',
+    'cp_freight_final1',
+    'cp_granary',
+    'cp_gullywash_final1',
+    'cp_process_final',
+    'cp_snakewater_final1',
+    'cp_well',
+    'cp_follower',
+    'cp_intermodal_g1f',
+    'cp_metalworks_rc5',
+    'cp_prolane_v4',
+    'cp_sunshine_rc1a',
+    'cp_warmfront',
+    'ctf_turbine_pro_rc2',
+    'koth_pro_viaduct_rc4'
+  ]
 
 filterMaps = (desired, mapList) ->
 
