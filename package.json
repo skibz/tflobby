@@ -26,6 +26,7 @@
   "dependencies": {
     "simple-rcon": "*"
   },
+  "repository": { "type": "git", "url": "https://github.com/skibz/tflobby.git" },
   "author": "ant cosentino",
   "license": "public domain"
 }
