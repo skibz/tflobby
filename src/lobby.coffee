@@ -1,4 +1,4 @@
-Rcon = require './rcon.coffee'
+Rcon = require('./rcon.coffee')
 
 responses =
   affirmative = [
@@ -189,12 +189,10 @@ exports.rconSay = (robot, msg) ->
   if robot.auth.hasRole(msg.envelope.user, 'rcon')
 
     if server?.rcon
-      return new Rcon(server, (ctx) ->
-        ctx.exec("sm_say #{msg.match[2]}", (res) ->
+      return new Rcon server, (ctx) ->
+        ctx.exec "sm_say #{msg.match[2]}", (res) ->
           ctx.close()
           msg.reply "#{msg.random(responses.affirmative)} your message was delivered..."
-        )
-      )
 
     return msg.reply "#{msg.random(responses.mistake)} that's not a valid server..."
 
@@ -209,12 +207,10 @@ exports.rconRoster = (robot, msg) ->
     server = servers[previous.server]
 
     if previous? and server?.rcon
-      return new Rcon(server, (ctx) ->
-        ctx.exec("sm_say [ #tfbot ] #{Object.keys(previous.participants).join(' ')}", (res) ->
+      return new Rcon server, (ctx) ->
+        ctx.exec "sm_say [ #tfbot ] #{Object.keys(previous.participants).join(', ')}", (res) ->
           ctx.close()
           msg.reply "#{msg.random(responses.affirmative)} player roster was delivered..."
-        )
-      )
 
     return msg.reply "#{msg.random(responses.mistake)} there's no previous game data. creepy..."
 
@@ -228,12 +224,10 @@ exports.rconMap = (robot, msg) ->
   if robot.auth.hasRole(msg.envelope.user, 'rcon')
 
     if server?.rcon and (map in maps or filterMaps(map, maps).length is 1)
-      return new Rcon(server, (ctx) ->
-        ctx.exec("changelevel #{map}", (res) ->
+      return new Rcon server, (ctx) ->
+        ctx.exec "changelevel #{map}", (res) ->
           ctx.close()
           msg.reply "#{msg.random(responses.affirmative)} changing map as we speak..."
-        )
-      )
 
     return msg.reply "#{msg.random(responses.mistake)} i don't know that map..."
 
@@ -282,24 +276,24 @@ exports.add = (robot, msg) ->
   lobby = robot.brain.get('lobby')
   target = if msg.match[1] is 'me' then user else msg.match[1].trim()
 
-  if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
+  if target is 'me' or (target isnt 'me' and robot.auth.hasRole msg.envelope.user, 'officer')
 
     if not lobby?
-      lobby = newLobby(msg.random(maps), user, msg.random(serverList[0..2]))
+      lobby = newLobby msg.random(maps), user, msg.random(serverList[0..2])
       robot.brain.set 'lobby', lobby
 
-    players = Object.keys(lobby.participants)
+    players = Object.keys lobby.participants
 
     if players.length < 12
 
       if target not in players
         lobby.participants[target] = target
         robot.brain.set 'lobby', lobby
-        players = Object.keys(lobby.participants)
+        players = Object.keys lobby.participants
         msg.send "|| #{lobby.server} | #{lobby.map} | #{players.length}/12 | [ #{players.join(', ')} ] ||"
         return unless players.length is 12 and not lobby.finalising
 
-        return setTimeout(finalising, 60000, robot, msg)
+        return setTimeout finalising, 60000, robot, msg
 
       return msg.reply "#{if msg.match[1] is 'me' then 'you are' else target + ' is'} already added..."
 
@@ -311,15 +305,15 @@ exports.rem = (robot, msg) ->
   user = msg.message.user.id
   target = if msg.match[1] is 'me' then user else msg.match[1]
 
-  if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
-    lobby = robot.brain.get('lobby')
+  if target is 'me' or (target isnt 'me' and robot.auth.hasRole msg.envelope.user, 'officer')
+    lobby = robot.brain.get 'lobby'
     return msg.reply "#{msg.random(responses.mistake)} there\'s no pickup filling..." if not lobby?
 
-    players = Object.keys(lobby.participants)
+    players = Object.keys lobby.participants
 
     if target in players
       delete lobby.participants[target]
-      players = Object.keys(lobby.participants)
+      players = Object.keys lobby.participants
       robot.brain.set 'lobby', lobby
       return msg.send "|| #{lobby.server} | #{lobby.map} | #{players.length}/12 | [ #{players.join(', ')} ] ||"
 
@@ -330,14 +324,14 @@ exports.rem = (robot, msg) ->
 exports.map = (robot, msg) ->
   user = msg.message.user.id
 
-  if robot.auth.hasRole(msg.envelope.user, 'officer')
+  if robot.auth.hasRole msg.envelope.user, 'officer'
 
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get 'lobby'
 
     return msg.reply "#{msg.random(responses.mistake)} there\'s no pickup filling..." unless lobby?
 
     validMap = msg.match[2] in maps
-    filtered = filterMaps(msg.match[2], maps)
+    filtered = filterMaps msg.match[2], maps
 
     if validMap
       map = msg.match[2]
@@ -347,7 +341,7 @@ exports.map = (robot, msg) ->
       map = msg.random maps
 
     lobby.map = map
-    robot.brain.set('lobby', lobby)
+    robot.brain.set 'lobby', lobby
     return msg.reply "#{msg.random(responses.affirmative)} changing map to #{map}..."
 
   return msg.reply "#{msg.random(responses.mistake)} you can't do that..."
@@ -380,7 +374,7 @@ exports.status = (robot, msg) ->
 
 exports.previous = (robot, msg) ->
   previous = robot.brain.get 'previous'
-  return msg.send "#{msg.randomresponses.negative)}, no previous match data..." unless previous?
+  return msg.send "#{msg.random(responses.negative)}, no previous match data..." unless previous?
   return msg.send "|| #{previous.principal} | #{previous.server} | #{previous.map} | [ #{Object.keys(previous.participants).join(', ')} ] | #{new Date(previous.createdAt).toString()} ||"
 
 exports.top = (robot, msg) ->
