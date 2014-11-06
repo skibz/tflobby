@@ -320,7 +320,7 @@ exports.add = ((robot, msg) ->
 
 exports.rem = ((robot, msg) ->
   user = msg.message.user.id
-  target = if msg.match[1] is 'me' then user else msg.match[1]
+  target = if msg.match[1] is 'me' then user else msg.match[1].trim()
 
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
     lobby = robot.brain.get('lobby')
