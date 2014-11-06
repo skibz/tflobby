@@ -1,4 +1,4 @@
-Rcon = require('./rcon.coffee')
+Rcon = require('./rcon')
 
 responses =
   affirmative = [
