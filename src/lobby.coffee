@@ -122,6 +122,7 @@ newLobby = (map, principal, server) ->
     server: server
     principal: principal ? 'tfbot'
     participants: {}
+    shouted: false
     finalising: false
   }
 
@@ -168,6 +169,27 @@ finalising = (robot, msg) ->
     lobby.finalising = false
     robot.brain.set('lobby', lobby)
     return msg.send("#{msg.random(responses.mistake)}  it looks like we didn't find enough players in time. but never fear! tfbot is here to comfort you while you cry yourself to sleep.")
+
+announce = (robot, msg) ->
+  secret = process.env.ANTINO_AUTH_KEY ? ''
+  endpoint = process.env.ANTINO_ANNOUNCE_ENDPOINT ? ''
+  group = process.env.ANTINO_STEAM_GROUP ? ''
+
+  if not secret? or not endpoint? or not group?
+    return msg.send "#{msg.random(responses.negative)}, looks like i'm not allowed to do that. how embarrassing..."
+
+  lobby = robot.brain.get('lobby')
+  players = Object.keys(lobby.participants).length
+
+  form =
+    auth_key: secret,
+    group: group,
+    title: "[ #tfbot ] !add #{players}/12",
+    body: "connect via http://antino.co.za/tfbot if you don't have an irc client"
+
+  return robot.http(endpoint).post(JSON.stringify(form)) (err, res, body) ->
+    return msg.send "#{msg.random(responses.negative)}, #{err}" if err
+    return msg.send "#{msg.random(responses.affirmative)} announcement posted to steam group..."
 
 exports.onLeave = (robot, msg) ->
   lobby = robot.brain.get('lobby')
@@ -314,7 +336,7 @@ exports.rem = (robot, msg) ->
 
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
     lobby = robot.brain.get('lobby')
-    return msg.reply("#{msg.random(responses.mistake)} there\'s no pickup filling...") if not lobby?
+    return msg.reply("#{msg.random(responses.mistake)} there's no pickup filling...") if not lobby?
 
     players = Object.keys(lobby.participants)
 
@@ -403,3 +425,13 @@ exports.top = (robot, msg) ->
     response += " #{player}: #{played} |" for player, played of today.players
 
   return msg.send("#{response}|")
+
+exports.shout = (robot, msg) ->
+  lobby = robot.brain.get 'lobby'
+  
+  return msg.send "#{msg.random(mistake)} there's no pickup filling..." unless lobby?
+  return msg.send "#{msg.random(mistake)} you've expended your shout, ouch..." if lobby.shouted
+  
+  lobby.shouted = true
+  robot.brain.set 'lobby', lobby
+  return announce robot, msg

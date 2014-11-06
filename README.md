@@ -11,4 +11,6 @@ also, note the environment variables expected to be present in the `servers` var
 
 it's highly recommended to configure the `hubot-auth` script if you plan on using this module with (or without) rcon capability. if you're going to set up a public lobby system, you don't want any old tom, dick or harry playing with your rcon commands or cancelling your lobby while it's still waiting for players.
 
+other environment variables used are for a service hosted on my personal site that posts announcements to a steam group upon usage of a command this module exposes. i plan on releasing the source (php) for said service in the future. but until then...
+
 this module is yours to do with _as you please_ - public domain, muddafuckas.
