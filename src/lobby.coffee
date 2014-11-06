@@ -429,8 +429,8 @@ exports.top = (robot, msg) ->
 exports.shout = (robot, msg) ->
   lobby = robot.brain.get 'lobby'
   
-  return msg.send "#{msg.random(mistake)} there's no pickup filling..." unless lobby?
-  return msg.send "#{msg.random(mistake)} you've expended your shout, ouch..." if lobby.shouted
+  return msg.send "#{msg.random(responses.mistake)} there's no pickup filling..." unless lobby?
+  return msg.send "#{msg.random(responses.mistake)} you've expended your shout, ouch..." if lobby.shouted
   
   lobby.shouted = true
   robot.brain.set 'lobby', lobby
