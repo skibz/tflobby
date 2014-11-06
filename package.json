@@ -1,0 +1,31 @@
+{
+  "name": "tflobby",
+  "version": "0.0.0",
+  "description": "a lobby script designed for use in hubot",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "team",
+    "fortress",
+    "lobby",
+    "pug",
+    "pick",
+    "up",
+    "game",
+    "pickups",
+    "competitive",
+    "esport",
+    "esports",
+    "rcon",
+    "source",
+    "valve",
+    "tf2"
+  ],
+  "dependencies": {
+    "simple-rcon": "*"
+  },
+  "author": "ant cosentino",
+  "license": "public domain"
+}
