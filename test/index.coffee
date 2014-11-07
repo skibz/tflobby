@@ -1,6 +1,12 @@
 {expect} = require 'chai'
 hubot = require 'actuator'
 
+# todo
+# 
+# make passes at using hubot.robot 
+# to mock state in the application
+# for each spec
+
 beforeEach (done) ->
   hubot.initiate(script: '../scripts/tflobby.coffee', done)
 
@@ -90,7 +96,13 @@ describe 'hubot lobby', ->
     it 'should create a new pickup with the given map', (done) ->
       hubot.on('hubot sg cp_badlands')
         .spread (response) ->
+          lobby = robot.brain.get('lobby')
           expect(response).to.equal '|| cp_badlands | 0/12 | [  ] ||'
+          expect(lobby).to.have.property('map')
+          expect(lobby).to.have.property('participants')
+          expect(lobby).to.have.property('finalising')
+          expect(lobby).to.have.property('principal')
+          expect(lobby).to.have.property('server')
         .done(done.bind(@, null), done)
 
     it 'should filter and select a single map if a partial name is given', (done) ->
@@ -109,14 +121,14 @@ describe 'hubot lobby', ->
 
   describe 'add me|username', ->
 
-    it 'should add a given user to a lobby', (done) ->
+    it 'should add a nickname to a lobby', (done) ->
       hubot.on('hubot cg')
       hubot.on('hubot add abcd')
         .spread (response) ->
           expect(response).to.contain '| 1/12 | [ abcd ] ||'
         .done(done.bind(@, null), done)
 
-    it 'should respond with an error if the given user is already added', (done) ->
+    it 'should respond with an error if the given nickname is already added', (done) ->
       hubot.on('hubot cg')
       hubot.on('hubot add abcd')
       hubot.on('hubot add abcd')
@@ -124,19 +136,25 @@ describe 'hubot lobby', ->
           expect(response).to.contain 'already added...'
         .done(done.bind(@, null), done)
 
-    it 'should responsd with an error if the pickup is full', (done) ->
-      hubot.on('hubot add 1')
-      hubot.on('hubot add 2')
-      hubot.on('hubot add 3')
-      hubot.on('hubot add 4')
-      hubot.on('hubot add 5')
-      hubot.on('hubot add 6')
-      hubot.on('hubot add 7')
-      hubot.on('hubot add 8')
-      hubot.on('hubot add 9')
-      hubot.on('hubot add 10')
-      hubot.on('hubot add 11')
-      hubot.on('hubot add 12')
+    it 'should responsd with an error if the lobby is full', (done) ->
+
+      lobby =
+        participants:
+          1: 0
+          2: 0
+          3: 0
+          4: 0
+          5: 0
+          6: 0
+          7: 0
+          8: 0
+          9: 0
+          10: 0
+          11: 0
+          12: 0
+
+      hubot.robot.set 'lobby', lobby
+
       hubot.on('hubot add 13')
         .spread (response) ->
           expect(response).to.contain 'the pickup is already full...'
@@ -145,20 +163,33 @@ describe 'hubot lobby', ->
   describe 'rem me|username', ->
 
     it 'should respond with an error if no lobby is filling', (done) ->
+
+      hubot.robot.lobby.set 'lobby', null
+
       hubot.on('hubot rem me')
         .spread (response) ->
           expect(response).to.contain 'no pickup filling...'
         .done(done.bind(@, null), done)
 
     it 'should remove a given user from a lobby', (done) ->
-      hubot.on('hubot add asdf')
+      lobby =
+        participants:
+          asdf: 'asdf'
+      
+      hubot.robot.set 'lobby', lobby
+
       hubot.on('hubot rem asdf')
         .spread (response) ->
           expect(response).to.contain '| 0/12 | [  ] ||'
         .done(done.bind(@, null), done)
 
     it 'should respond with an error if the given user is not listed in the lobby', (done) ->
-      hubot.on('hubot sg lkajsdf')
+      lobby =
+        participants:
+          lkajsdf: 'lkajsdf'
+
+      hubot.robot.set 'lobby', lobby
+
       hubot.on('hubot rem lkjasdf')
         .spread (response) ->
           expect(response).to.contain 'added to the pickup...'
@@ -167,13 +198,23 @@ describe 'hubot lobby', ->
   describe 'map mapname', ->
 
     it 'should respond with an error if no lobby is filling', (done) ->
+      
+      lobby =
+        map: ''
+
+      hubot.robot.set 'lobby', lobby
+      
       hubot.on('hubot map lkjasfd')
         .spread (response) ->
           expect(response).to.contain 'no pickup filling...'
         .done(done.bind(@, null), done)
 
     it 'should change the map to the given mapname', (done) ->
-      hubot.on('hubot add lkajsdf')
+      lobby =
+        map: 'cp_snakewater_final1'
+
+      hubot.robot.set 'lobby', lobby
+
       hubot.on('hubot map badl')
         .spread (response) ->
           expect(response).to.contain 'changing map to cp_badlands...'
