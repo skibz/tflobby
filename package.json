@@ -1,6 +1,6 @@
 {
   "name": "tflobby",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "a lobby script designed for use in hubot",
   "main": "index.coffee",
   "scripts": {
@@ -11,8 +11,8 @@
     "fortress",
     "lobby",
     "pug",
-    "pick",
-    "up",
+    "pugs",
+    "pickup",
     "game",
     "pickups",
     "competitive",
@@ -26,7 +26,13 @@
   "dependencies": {
     "simple-rcon": "*"
   },
-  "repository": { "type": "git", "url": "https://github.com/skibz/tflobby.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skibz/tflobby.git"
+  },
   "author": "ant cosentino",
-  "license": "public domain"
+  "license": "public domain",
+  "devDependencies": {
+    "actuator": "0.0.2"
+  }
 }
