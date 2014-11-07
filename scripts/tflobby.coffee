@@ -3,9 +3,6 @@ lobby = require('../src/lobby')
 # Description:
 #   exposes a set of commands for handling team fortress lobbies
 #
-# Dependencies:
-#   "simple-rcon": "*"
-#
 # Configuration:
 #   TFLOBBY_MAPS - a comma separated list of map names.
 #   TFLOBBY_RCON_SERVERNAME - the rcon password to use in rcon commands. replace "SERVERNAME" with any identifier you wish.
@@ -29,9 +26,9 @@ lobby = require('../src/lobby')
 #   hubot [shout|scream|announce|this command is dumb] - reports the current lobby status to the configured steam group via the antino.co.za web service. limited to `officer` roles.
 #
 # Notes:
-#   regarding the ANTINO env vars, if (as a third-party) you wish to use 
-#   my service for announcing messages remotely in a steam group, then 
-#   don't hesitate to contact me.
+#   * regarding the ANTINO env vars, if (as a third-party) you wish to use 
+#   * my service for announcing messages remotely in a steam group, then 
+#   * don't hesitate to contact me.
 #
 # Author:
 #   skibz

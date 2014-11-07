@@ -93,7 +93,7 @@ servers =
 serverList = Object.keys servers
 
 if process.env.TFLOBBY_MAPS
-  maps = process.env.TFBOT_MAPS.split(',')
+  maps = process.env.TFLOBBY_MAPS.split(',')
 else
   maps = [
     'cp_gravelpit',
@@ -254,14 +254,19 @@ exports.rconMap = (robot, msg) ->
 
     if server?.rcon
       
-      return new Rcon(server, (ctx) ->
-        ctx.exec("changelevel #{if map in maps then map else filtered[0]}", (res) ->
-          ctx.close()
-          msg.reply("#{msg.random(responses.affirmative)} changing map as we speak...")
-        )
-      )
+      filtered = filterMaps(map, maps)
 
-    return msg.reply("#{msg.random(responses.mistake)} i don't know that map...")
+      if filtered.length is 1
+        return new Rcon(server, (ctx) ->
+          ctx.exec("changelevel #{filtered[0]}", (res) ->
+            ctx.close()
+            msg.reply("#{msg.random(responses.affirmative)} changing the map...")
+          )
+        )
+
+      return msg.reply("#{msg.random(responses.mistake)} i'm not familiar with that map...")
+
+    return msg.reply("#{msg.random(responses.mistake)} i don't know the rcon password for that server...")
 
   return msg.reply("#{msg.random(responses.mistake)} you can't to do that...")
 
@@ -295,7 +300,7 @@ exports.cg = (robot, msg) ->
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
     lobby = robot.brain.get('lobby')
-    return msg.reply("#{msg.random(responses.mistake)} there\'s no pickup filling...") unless lobby?
+    return msg.reply("#{msg.random(responses.mistake)} there's no pickup filling...") unless lobby?
 
     robot.brain.set('lobby', null)
 
@@ -360,7 +365,7 @@ exports.map = (robot, msg) ->
 
     lobby = robot.brain.get('lobby')
 
-    return msg.reply("#{msg.random(responses.mistake)} there\'s no pickup filling...") unless lobby?
+    return msg.reply("#{msg.random(responses.mistake)} there's no pickup filling...") unless lobby?
 
     validMap = msg.match[2] in maps
     filtered = filterMaps(msg.match[2], maps)
@@ -384,7 +389,7 @@ exports.server = (robot, msg) ->
   if robot.auth.hasRole(msg.envelope.user, 'officer')
 
     lobby = robot.brain.get('lobby')
-    return msg.reply("#{msg.random(responses.mistake)} there\'s no pickup filling...") unless lobby?
+    return msg.reply("#{msg.random(responses.mistake)} there's no pickup filling...") unless lobby?
 
     if msg.match[1] in serverList
       lobby.server = msg.match[1]
@@ -397,7 +402,7 @@ exports.server = (robot, msg) ->
 
 exports.status = (robot, msg) ->
   lobby = robot.brain.get('lobby')
-  return msg.reply("#{msg.random(responses.mistake)} there\'s currently no pickup...") unless lobby?
+  return msg.reply("#{msg.random(responses.mistake)} there's currently no pickup...") unless lobby?
   players = Object.keys(lobby.participants)
   return msg.send("|| #{lobby.server} | #{lobby.map} | #{players.length}/12 | [ #{players.join(', ')} ] ||")
 
