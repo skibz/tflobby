@@ -1,4 +1,4 @@
-lobby = require('../src/lobby')
+lobby = require('../src/lobby.coffee')
 
 # Description:
 #   exposes a set of commands for handling team fortress lobbies
@@ -6,9 +6,6 @@ lobby = require('../src/lobby')
 # Configuration:
 #   TFLOBBY_MAPS - a comma separated list of map names.
 #   TFLOBBY_RCON_SERVERNAME - the rcon password to use in rcon commands. replace "SERVERNAME" with any identifier you wish.
-#   ANTINO_AUTH_KEY - not for public use.
-#   ANTINO_ANNOUNCE_ENDPOINT - not for public use.
-#   ANTINO_STEAM_GROUP - not for public use.
 #
 # Commands:
 #   hubot rcon [say|message|msg] <message> on <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
@@ -23,12 +20,6 @@ lobby = require('../src/lobby')
 #   hubot [status|games] - reports the lobby status
 #   hubot [previous|last game|lastgame|previous game] - reports the previous lobby status
 #   hubot top <maps|players> - reports the daily counter data accumulated for either maps or players
-#   hubot [shout|scream|announce|this command is dumb] - reports the current lobby status to the configured steam group via the antino.co.za web service. limited to `officer` roles.
-#
-# Notes:
-#   * regarding the ANTINO env vars, if (as a third-party) you wish to use 
-#   * my service for announcing messages remotely in a steam group, then 
-#   * don't hesitate to contact me.
 #
 # Author:
 #   skibz
@@ -59,5 +50,3 @@ module.exports = (robot) ->
   robot.respond /(previous|last game|lastgame|previous game)/i, (msg) -> lobby.previous(robot, msg)
   
   robot.respond /top (maps|players)/i, (msg) -> lobby.top(robot, msg)
-
-  robot.respond /(shout|scream|announce|this command is dumb)/i, (msg) -> lobby.shout(robot, msg)

@@ -1,4 +1,4 @@
-Rcon = require('./rcon')
+Rcon = require('./rcon.coffee')
 
 responses =
   affirmative: [
@@ -296,7 +296,7 @@ exports.sg = (robot, msg) ->
 
     created = newLobby(map, user, msg.random(serverList[0..3]))
     robot.brain.set('lobby', created)
-    return msg.send("|| #{created.map} | #{Object.keys(created.participants).length}/12 | [  ] ||")
+    return msg.send("|| #{created.server} | #{created.map} | #{Object.keys(created.participants).length}/12 | [  ] ||")
 
   return msg.send("#{msg.random(responses.mistake)} you can't to do that...")
 
@@ -432,13 +432,3 @@ exports.top = (robot, msg) ->
     response += " #{player}: #{played} |" for player, played of today.players
 
   return msg.send("#{response}|")
-
-exports.shout = (robot, msg) ->
-  lobby = robot.brain.get 'lobby'
-  
-  return msg.send "#{msg.random(responses.mistake)} there's no pickup filling..." unless lobby?
-  return msg.send "#{msg.random(responses.mistake)} you've expended your shout, ouch..." if lobby.shouted
-  
-  lobby.shouted = true
-  robot.brain.set 'lobby', lobby
-  return announce robot, msg
