@@ -114,6 +114,17 @@ else
     'koth_pro_viaduct_rc4'
   ]
 
+if process.env.TFLOBBY_POPULAR_MAPS
+  popular_maps = process.env.TFLOBBY_POPULAR_MAPS.split(',')
+else
+  popular_maps = [
+    'cp_badlands',
+    'cp_granary',
+    'cp_gullywash_final1',
+    'cp_process_final',
+    'cp_snakewater_final1',
+  ]
+
 filterMaps = (desired, mapList) ->
 
   mapList.filter((map) -> map.indexOf(desired) isnt -1)
@@ -163,11 +174,17 @@ finalising = (robot, msg) ->
 
       robot.brain.set('today', today)
 
-      robot.brain.set('lobby', null)
       robot.brain.set('previous', lobby)
+
       msg.send("be a darling and click the link: steam://connect/#{server.host}:#{server.port}/#{server.password}")
       msg.send("no guarantee can be made that your place will still be available if you're late.")
-      return msg.send("also, if you're late often, a suitable punishment will be awarded.")
+      msg.send("also, if you're late often, a suitable punishment will be awarded.")
+      
+      msg.send("#{msg.random(responses.affirmative)} automatically starting a new pickup...")
+      lobby = newLobby(msg.random(popular_maps), 'tfbot', msg.random(serverList[0..2]))
+      robot.brain.set('lobby', lobby)
+      
+      return  msg.send("|| #{created.server} | #{created.map} | 0/12 | [  ] ||")
 
     lobby.finalising = false
     robot.brain.set('lobby', lobby)
@@ -255,11 +272,11 @@ exports.rconMap = (robot, msg) ->
     if server?
 
       if server.rcon?
-      
+
         filtered = filterMaps(map, maps)
 
         if filtered.length is 1
-          
+
           return new Rcon(server, (ctx) ->
             ctx.exec("changelevel #{filtered[0]}", (res) ->
               ctx.close()
@@ -292,7 +309,7 @@ exports.sg = (robot, msg) ->
     else if filtered.length is 1
       map = filtered[0]
     else
-      map = msg.random(maps)
+      map = msg.random(popular_maps)
 
     created = newLobby(map, user, msg.random(serverList[0..3]))
     robot.brain.set('lobby', created)
@@ -321,7 +338,7 @@ exports.add = (robot, msg) ->
   if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
 
     if not lobby?
-      lobby = newLobby(msg.random(maps), user, msg.random(serverList[0..2]))
+      lobby = newLobby(msg.random(popular_maps), user, msg.random(serverList[0..2]))
       robot.brain.set('lobby', lobby)
 
     players = Object.keys(lobby.participants)

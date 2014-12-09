@@ -5,6 +5,7 @@ lobby = require('../src/lobby.coffee')
 #
 # Configuration:
 #   TFLOBBY_MAPS - a comma separated list of map names.
+#   TFLOBBY_POPULAR_MAPS - a comma separated list of the most played maps
 #   TFLOBBY_RCON_SERVERNAME - the rcon password to use in rcon commands. replace "SERVERNAME" with any identifier you wish.
 #
 # Commands:
