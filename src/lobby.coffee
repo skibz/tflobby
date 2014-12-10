@@ -1,3 +1,4 @@
+# hmmm
 Rcon = require('./rcon.coffee')
 
 responses =
