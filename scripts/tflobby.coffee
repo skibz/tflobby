@@ -1,4 +1,3 @@
-# hmmm
 lobby = require('../src/lobby.coffee')
 
 # Description:
@@ -7,7 +6,7 @@ lobby = require('../src/lobby.coffee')
 # Configuration:
 #   TFLOBBY_MAPS - a comma separated list of map names.
 #   TFLOBBY_POPULAR_MAPS - a comma separated list of the most played maps
-#   TFLOBBY_RCON_SERVERNAME - the rcon password to use in rcon commands. replace "SERVERNAME" with any identifier you wish.
+#   TFLOBBY_GAME_SERVERS - array of json objects keyed by server data, eg. port, password, host, etc... 
 #
 # Commands:
 #   hubot rcon [say|message|msg] <message> on <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
@@ -25,6 +24,7 @@ lobby = require('../src/lobby.coffee')
 #
 # Author:
 #   skibz
+
 module.exports = (robot) ->
   
   robot.leave (msg) -> lobby.onLeave(robot, msg)
