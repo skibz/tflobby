@@ -1,14 +1,16 @@
 tflobby
 =======
 
-this module was designed to play nicely with hubot.
+this module was designed to play nicely with [hubot](https://github.com/github/hubot). it's pretty easy to set up and use for your own chat bot and team fortress game servers.
 
-if you'd like to specialise this module for your own means, then you'd have to decouple the hubot variables expected to be present in each function.
+##### configuration
 
-otherwise, it's pretty easy to set up and use for your own chat bot and game servers. just have a look in `src/lobby.coffee` and change the game servers listed in the `servers` variable to reflect the servers you'd like to be available.
++ `HUBOT_AUTH_ADMIN`: comma-separated list of nicknames
++ `TFLOBBY_MAPS`: comma-separated list of available maps
++ `TFLOBBY_POPULAR_MAPS`: comma-separated list of popular maps (they must be present in TFLOBBY_MAPS)
++ `TFLOBBY_GAME_SERVERS`: stringified json. schema: `{ "servername": { "name": string, "host": string, "port": integer, "tv": string, "password": string, "rcon": string } }`
++ `TFLOBBY_DEFAULT_SERVER`: string corresponding to TFLOBBY_GAME_SERVERS servername
 
-also, note the environment variables expected to be present in the `servers` variable. they aren't required, but if you have an rcon password, you can add it and then administer your server via the chat bot. rcon operations are limited to map change, player roster reporting and arbitrary text messaging at the moment.
+adding and configuring the `hubot-auth` script is recommended if you plan on using this module with (or without) rcon capability. in fact, this script assumes you've assigned `admin`, `officer` and `rcon` roles. let's face it, if you're going to provide a public lobby system, you don't want any old tom, dick or harry playing with your rcon commands or cancelling your lobby while it's still waiting for players.
 
-it's highly recommended to configure the `hubot-auth` script if you plan on using this module with (or without) rcon capability. in fact, this script assumes you've assigned admin, officer and rcon roles. if you're going to set up a public lobby system, you don't want any old tom, dick or harry playing with your rcon commands or cancelling your lobby while it's still waiting for players.
-
-this module is yours to do with _as you please_ - public domain, muddafuckas.
+this module is yours to do with **as you please** - public domain, muddafuckas.
