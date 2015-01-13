@@ -1,5 +1,3 @@
-lobby = require('../src/lobby.coffee')
-
 # Description:
 #   exposes a set of commands for handling team fortress lobbies
 #
@@ -14,6 +12,7 @@ lobby = require('../src/lobby.coffee')
 #   hubot rcon [change map|changelevel|map] on <server> to <mapname> - changes the map on <server> to <mapname>. limited to `rcon` roles.
 #   hubot [sg|new] <mapname> - creates a new lobby with the map set to <mapname>. limited to `officer` roles.
 #   hubot [cg|kill] - cancels a running lobby. limited to `officer` roles.
+#   hubot format <nPlayers> - changes the number of players per side to nPlayers.
 #   hubot add <me|user> - adds <user> to the lobby. addition of other users is limited to `officer` roles.
 #   hubot rem <me|user> - removes <user> from the lobby. removal of other users is limited to `officer` roles.
 #   hubot map <mapname> - changes the lobby map to <mapname>. limited to `officer` roles.
@@ -25,30 +24,34 @@ lobby = require('../src/lobby.coffee')
 # Author:
 #   skibz
 
+commands = require('../src/commands.coffee')
+
 module.exports = (robot) ->
   
-  robot.leave (msg) -> lobby.onLeave(robot, msg)
+  robot.leave (msg) -> commands.onLeave(robot, msg)
   
-  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> lobby.rconSay(robot, msg)
+  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> commands.rconSay(robot, msg)
   
-  robot.respond /rcon (list|the list|roster|players) on (.*)/i, (msg) -> lobby.rconRoster(robot, msg)
+  robot.respond /rcon (list|the list|roster|players) on (.*)/i, (msg) -> commands.rconRoster(robot, msg)
   
-  robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> lobby.rconMap(robot, msg)
+  robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> commands.rconMap(robot, msg)
   
-  robot.respond /(sg|new) (.*)/i, (msg) -> lobby.sg(robot, msg)
+  robot.respond /(sg|new) (.*)/i, (msg) -> commands.sg(robot, msg)
 
-  robot.respond /(cg|kill)/i, (msg) -> lobby.cg(robot, msg)
+  robot.respond /(cg|kill)/i, (msg) -> commands.cg(robot, msg)
+
+  robot.respond /format (.*)/i, (msg) -> commands.format(robot, msg)
   
-  robot.respond /add (me|.*)/i, (msg) -> lobby.add(robot, msg)
+  robot.respond /add (me|.*)/i, (msg) -> commands.add(robot, msg)
   
-  robot.respond /rem (me|.*)/i, (msg) -> lobby.rem(robot, msg)
+  robot.respond /rem (me|.*)/i, (msg) -> commands.rem(robot, msg)
   
-  robot.respond /map (.*)/i, (msg) -> lobby.map(robot, msg)
+  robot.respond /map (.*)/i, (msg) -> commands.map(robot, msg)
   
-  robot.respond /server (.*)/i, (msg) -> lobby.server(robot, msg)
+  robot.respond /server (.*)/i, (msg) -> commands.server(robot, msg)
   
-  robot.respond /(status|games)/i, (msg) -> lobby.status(robot, msg)
+  robot.respond /(status|games)/i, (msg) -> commands.status(robot, msg)
   
-  robot.respond /(previous|last game|lastgame|previous game)/i, (msg) -> lobby.previous(robot, msg)
+  robot.respond /(previous|last game|lastgame|previous game)/i, (msg) -> commands.previous(robot, msg)
   
-  robot.respond /top (maps|players)/i, (msg) -> lobby.top(robot, msg)
+  robot.respond /top (maps|players)/i, (msg) -> commands.top(robot, msg)
