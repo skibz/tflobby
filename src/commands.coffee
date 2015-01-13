@@ -3,14 +3,14 @@ Lobby = require('./lobby.coffee')
 
 topToday = (entity) ->
 
-  today = robot.brain.get('today')
+  today = @brain.get('today')
 
   unless today?
-    return "i haven't captured any daily data yet..."
+    return 'i haven\'t captured any daily data yet...'
 
   response = '||'
 
-  if not Object.keys(today[entity]).length
+  unless Object.keys(today[entity]).length
     return "i haven't captured any daily #{entity} data yet..."
 
   response += " #{entity}: #{times} |" for entity, times of today[entity]
@@ -18,7 +18,7 @@ topToday = (entity) ->
 
 finalising = (robot, msg) ->
 
-  lobby = robot.brain.get('lobby')
+  lobby = robot.brain.get('tflobby.lobby')
   server = robot.brain.get('tflobby.servers')[lobby.server]
   format = lobby.format()
 
@@ -56,16 +56,16 @@ finalising = (robot, msg) ->
         msg.send(":: pro tip: don\'t be late.")
         msg.send(":: starting a new pickup...")
         created = newLobby(msg.random(popular_maps), 'tfbot', robot.brain.get('tflobby.servers.default'), 6)
-        robot.brain.set('lobby', created)
+        robot.brain.set('tflobby.lobby', created)
         return msg.send(":: #{created.server} : #{created.map} : 0/#{created.format()} : [  ] ::")
       )
 
     lobby.finalising = false
-    robot.brain.set('lobby', lobby)
-    return msg.send("not enough players to begin: #{players.length}/#{format}...")
+    robot.brain.set('tflobby.lobby', lobby)
+    return msg.send(":: not enough players to begin: #{players.length}/#{format}...")
 
 exports.onLeave = (robot, msg) ->
-  lobby = robot.brain.get('lobby')
+  lobby = robot.brain.get('tflobby.lobby')
 
   return unless lobby?
 
@@ -74,7 +74,7 @@ exports.onLeave = (robot, msg) ->
 
   if user in players
     delete lobby.participants[user]
-    robot.brain.set('lobby', lobby)
+    robot.brain.set('tflobby.lobby', lobby)
     return msg.send(":: #{lobby.server} : #{lobby.map} : #{players.length}/#{lobby.format()} : [ #{players.join(', ')} ] ::")
 
 exports.rconSay = (robot, msg) ->
@@ -150,7 +150,7 @@ exports.sg = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
 
     if lobby?
       return msg.reply("a pickup's already filling...")
@@ -171,7 +171,7 @@ exports.sg = (robot, msg) ->
       robot.brain.get('tflobby.servers')[robot.brain.get('tflobby.servers.default')]
     )
 
-    robot.brain.set('lobby', created)
+    robot.brain.set('tflobby.lobby', created)
 
     return msg.send(":: #{created.server} : #{created.map} : 0/#{created.format()} : [  ] ::")
 
@@ -181,12 +181,12 @@ exports.cg = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
 
     unless lobby?
       return msg.reply("no pickup filling - create one with !sg or !add")
 
-    robot.brain.set('lobby', null)
+    robot.brain.set('tflobby.lobby', null)
 
     return msg.send("pickup cancelled...")
 
@@ -197,7 +197,7 @@ exports.format = (robot, msg) ->
   user = msg.message.user.id
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
 
     unless lobby?
       return msg.reply("no pickup filling - create one with !sg or !add")
@@ -213,7 +213,7 @@ exports.format = (robot, msg) ->
           if format < 13
 
             lobby.set('playersPerSide', format)
-            robot.brain.set('lobby', lobby)
+            robot.brain.set('tflobby.lobby', lobby)
             return msg.reply("players per side set to `#{format}`...")
 
           return msg.reply("pickups can have up to twelve players per side...")
@@ -235,7 +235,7 @@ exports.add = (robot, msg) ->
 
   if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
 
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
 
     unless lobby?
       lobby = new Lobby(
@@ -243,7 +243,7 @@ exports.add = (robot, msg) ->
         user,
         robot.brain.get('tflobby.servers.default')
       )
-      robot.brain.set('lobby', lobby)
+      robot.brain.set('tflobby.lobby', lobby)
 
     players = lobby.names()
     format = lobby.format()
@@ -251,8 +251,8 @@ exports.add = (robot, msg) ->
     if players.length < lobby.format()
 
       if target not in players
-        lobby.participants[target] = target
-        robot.brain.set('lobby', lobby)
+        lobby.add(target)
+        robot.brain.set('tflobby.lobby', lobby)
         players = lobby.names()
         msg.send(":: #{lobby.server} : #{lobby.map} : #{players.length}/#{format} : [ #{players.join(', ')} ] ::")
         return unless players.length is format and not lobby.finalising
@@ -267,19 +267,20 @@ exports.add = (robot, msg) ->
 
 exports.rem = (robot, msg) ->
   user = msg.message.user.id
-  target = if msg.match[1] is 'me' then user else msg.match[1].trim()
+  targetingSelf = msg.match[1] is 'me'
+  target = if targetingSelf then user else msg.match[1].trim()
 
-  if target is 'me' or (target isnt 'me' and robot.auth.hasRole(msg.envelope.user, 'officer'))
+  if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
 
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
     players = lobby.names()
 
     unless lobby?
       return msg.reply("no pickup filling - create one with !sg or !add")
 
     if target in players
-      delete lobby.participants[target]
-      robot.brain.set('lobby', lobby)
+      lobby.rem(target)
+      robot.brain.set('tflobby.lobby', lobby)
       format = lobby.format()
       players = lobby.names()
       return msg.send(":: #{lobby.server} : #{lobby.map} : #{players.length}/#{format} : #{players.join(', ')} ::")
@@ -293,7 +294,7 @@ exports.map = (robot, msg) ->
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
 
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
 
     unless lobby?
       return msg.reply("no pickup filling - create one with !sg or !add")
@@ -302,7 +303,7 @@ exports.map = (robot, msg) ->
 
     if filtered.length is 1
       lobby.set('map', filtered[0])
-      robot.brain.set('lobby', lobby)
+      robot.brain.set('tflobby.lobby', lobby)
       return msg.reply("changing map to `#{filtered[0]}`...")
     else
       return msg.reply("which one did you mean? #{filtered.join(', ')}...")
@@ -314,14 +315,14 @@ exports.server = (robot, msg) ->
 
   if robot.auth.hasRole(msg.envelope.user, 'officer')
 
-    lobby = robot.brain.get('lobby')
+    lobby = robot.brain.get('tflobby.lobby')
 
     unless lobby?
       return msg.reply("no pickup filling - create one with !sg or !add")
 
     if msg.match[1] in robot.brain.get('tflobby.servers.names')
       lobby.set('server', robot.brain.get('tflobby.servers')[msg.match[1]])
-      robot.brain.set('lobby', lobby)
+      robot.brain.set('tflobby.lobby', lobby)
       return msg.reply("server changed to `#{msg.match[1]}`...")
 
     return msg.reply("unknown server `#{msg.match[1]}`...")
@@ -330,7 +331,7 @@ exports.server = (robot, msg) ->
 
 exports.status = (robot, msg) ->
 
-  lobby = robot.brain.get('lobby')
+  lobby = robot.brain.get('tflobby.lobby')
 
   unless lobby?
     return msg.reply("no pickup to report - create one with !sg or !add")
@@ -350,6 +351,6 @@ exports.previous = (robot, msg) ->
 exports.top = (robot, msg) ->
 
   if msg.match[1] is 'maps' or msg.match[1] is 'players'
-    return msg.reply("#{topToday(msg.match[1])}")
+    return msg.reply("#{topToday.call(robot, msg.match[1])}")
   else
     return msg.reply("#{msg.random(robot.brain.get('tflobby.chat.mistake'))} i don't keep track of those things...")

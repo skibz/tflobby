@@ -10,9 +10,10 @@ class Lobby
     @finalising = false
 
   format: -> @playersPerSide * 2
-
   names: -> Object.keys(@participants)
-
+  added: -> Object.keys(@participants).length
   set: (property, value) -> @[property] = value if {}.hasOwnProperty.call(@, property)
+  add: (name) -> @participants[name] = name
+  rem: (name) -> delete @participants[name]
 
 module.exports = Lobby
