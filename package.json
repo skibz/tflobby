@@ -1,10 +1,10 @@
 {
   "name": "tflobby",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "a lobby script designed for use in hubot",
   "main": "index.coffee",
   "scripts": {
-    "test": "node_modules/.bin/_mocha test"
+    "test": "echo no test suite"
   },
   "keywords": [
     "team",

@@ -3,7 +3,7 @@ Lobby = require('./lobby.coffee')
 
 topToday = (entity) ->
 
-  today = @brain.get('today')
+  today = @brain.get('today') ? { players: {}, maps: {} }
 
   unless today?
     return 'i haven\'t captured any daily data yet...'
@@ -73,13 +73,13 @@ exports.onLeave = (robot, msg) ->
   players = lobby.names()
 
   if user in players
-    delete lobby.participants[user]
+    lobby.rem(user)
+    # delete lobby.participants[user]
     robot.brain.set('tflobby.lobby', lobby)
     return msg.send(":: #{lobby.server} : #{lobby.map} : #{players.length}/#{lobby.format()} : [ #{players.join(', ')} ] ::")
 
 exports.rconSay = (robot, msg) ->
   user = msg.message.user.id
-
   server = servers[msg.match[3].toLowerCase()]
 
   if robot.auth.hasRole(msg.envelope.user, 'rcon')
@@ -108,11 +108,11 @@ exports.rconRoster = (robot, msg) ->
       return new Rcon(server, (ctx) ->
         ctx.exec("sm_say [ #tfbot ] #{previous.names().join(', ')}", (res) ->
           ctx.close()
-          msg.reply("player roster was delivered...")
+          msg.reply("player roster sent to `#{server.name}`...")
         )
       )
 
-    return msg.reply("there's no previous game data. creepy...")
+    return msg.reply("#{msg.random(robot.brain.get('tflobby.chat.affirmative'))} there's no previous game data. creepy...")
 
   return msg.reply("#{msg.random(robot.brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
@@ -138,7 +138,7 @@ exports.rconMap = (robot, msg) ->
             )
           )
 
-        return msg.reply("which one did you mean? #{filtered.join(', ')}...")
+        return msg.reply("which map did you mean? #{filtered.join(', ')}...")
 
       return msg.reply("an rcon password isn't set for that server...")
 
