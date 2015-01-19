@@ -40,6 +40,12 @@ module.exports = (robot) ->
     console.error('[tflobby error] TFLOBBY_GAME_SERVERS', process.env.TFLOBBY_GAME_SERVERS)
     process.exit(1)
 
+  defaultServer = process.env.TFLOBBY_DEFAULT_SERVER
+
+  if not defaultServer
+    console.error('[tflobby error] TFLOBBY_DEFAULT_SERVER', process.env.TFLOBBY_DEFAULT_SERVER)
+    process.exit(1)
+
   # default maps
   maps = [
     'cp_gravelpit',
@@ -49,7 +55,7 @@ module.exports = (robot) ->
     'cp_gullywash_final1',
     'cp_process_final',
     'cp_snakewater_final1',
-    'cp_well',
+    'cp_well'
   ]
 
   # default popular maps
@@ -61,12 +67,15 @@ module.exports = (robot) ->
     'cp_snakewater_final1'
   ]
 
-  maps = process.env.TFLOBBY_MAPS.split(',') if process.env.TFLOBBY_MAPS
-  popularMaps = process.env.TFLOBBY_POPULAR_MAPS.split(',') if process.env.TFLOBBY_POPULAR_MAPS
+  if process.env.TFLOBBY_MAPS
+    maps = process.env.TFLOBBY_MAPS.split(',')
 
-  if not maps and popularMaps
-    console.error('[tflobby error] provide entries for TFLOBBY_MAPS and TFLOBBY_POPULAR_MAPS')
-    process.exit(1)
+  if process.env.TFLOBBY_POPULAR_MAPS
+    popularMaps = process.env.TFLOBBY_POPULAR_MAPS.split(',')
+
+  if not (maps and popularMaps)
+    console.error('[tflobby warning] no entries found for TFLOBBY_MAPS or TFLOBBY_POPULAR_MAPS')
+    console.error('[tflobby warning] defaulting to built-in team fortress maps...')
 
   mapsByMode = {}
 
@@ -78,17 +87,27 @@ module.exports = (robot) ->
   robot.brain.set('tflobby.maps.all', maps)
   robot.brain.set("tflobby.maps.#{mode}", maps) for mode, maps of mapsByMode
   robot.brain.set('tflobby.maps.popular', popularMaps)
-  robot.brain.set('tflobby.servers', servers)
+  robot.brain.set('tflobby.servers.all', servers)
   robot.brain.set('tflobby.servers.names', Object.keys(servers))
-  robot.brain.set('tflobby.servers.default', process.env.TFLOBBY_DEFAULT_SERVER)
+  robot.brain.set('tflobby.servers.default', defaultServer)
+
+  # console.log(robot.brain.get('tflobby.maps.all'))
+  # console.log(robot.brain.get("tflobby.maps.cp"))
+  # console.log(robot.brain.get("tflobby.maps.koth"))
+  # console.log(robot.brain.get("tflobby.maps.ctf"))
+  # console.log(robot.brain.get('tflobby.maps.popular'))
+  # console.log(robot.brain.get('tflobby.servers'))
+  # console.log(robot.brain.get('tflobby.servers.names'))
+  # console.log(robot.brain.get('tflobby.servers.default'))
 
   path = Path.resolve(__dirname, 'scripts')
 
-  fs.exists(
-    path,
-    (exists) ->
-      if exists
-        for file in fs.readdirSync(path)
-          robot.loadFile(path, file)
-          robot.parseHelp(Path.join(path, file))
+  fs.exists(path, (exists) ->
+    if not exists
+      console.error("#{path} don't exist")
+      process.exit(1)
+
+    for file in fs.readdirSync(path)
+      robot.loadFile(path, file)
+      robot.parseHelp(Path.join(path, file))
   )

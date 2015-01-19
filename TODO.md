@@ -7,3 +7,5 @@
 - [x] clean up the source a little - change control flow structures, use `unless` instead of `if not`, etc.
 - [x] remove any steam group announcement stuff
 - [x] change the `servers` data structure to be dynamically created at runtime using an env var.
+- [ ] add arena maps to index.coffee/maps variable
+- [ ] update documentation and figure out the current docs format for hubot scripts...

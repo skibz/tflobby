@@ -1,6 +1,6 @@
 {
   "name": "tflobby",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "a lobby script designed for use in hubot",
   "main": "index.coffee",
   "scripts": {
@@ -24,7 +24,7 @@
     "tf2"
   ],
   "dependencies": {
-    "simple-rcon": "*"
+    "simple-rcon": "latest"
   },
   "repository": {
     "type": "git",

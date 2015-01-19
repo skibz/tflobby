@@ -24,34 +24,29 @@
 # Author:
 #   skibz
 
-commands = require('../src/commands.coffee')
+rcon = require('../src/commands/rcon.coffee')
+admin = require('../src/commands/admin.coffee')
+public = require('../src/commands/public.coffee')
+lifecycle = require('../src/commands/lifecycle.coffee')
 
 module.exports = (robot) ->
 
-  robot.leave (msg) -> commands.onLeave(robot, msg)
+  robot.enter (msg) -> lifecycle.onEnter.call(robot, msg)
+  robot.leave (msg) -> lifecycle.onLeave.call(robot, msg)
+  robot.respond /(add|add (me|.*))/i, (msg) -> lifecycle.add.call(robot, msg)
+  robot.respond /(rem|rem (me|.*))/i, (msg) -> lifecycle.rem.call(robot, msg)
 
-  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> commands.rconSay(robot, msg)
+  robot.respond /(status|games)/i, (msg) -> public.status.call(robot, msg)
+  robot.respond /(previous|lastgame)/i, (msg) -> public.previous.call(robot, msg)
+  robot.respond /(top|today) (maps|players)/i, (msg) -> public.top.call(robot, msg)
 
-  robot.respond /rcon (list|the list|roster|players) on (.*)/i, (msg) -> commands.rconRoster(robot, msg)
+  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> rcon.rconSay.call(robot, msg)
+  robot.respond /rcon send (list|the list|roster|players) on (.*)/i, (msg) -> rcon.rconRoster.call(robot, msg)
+  robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> rcon.rconMap.call(robot, msg)
 
-  robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> commands.rconMap(robot, msg)
-
-  robot.respond /((sg|new) (.*)|(sg|new))/i, (msg) -> commands.sg(robot, msg)
-
-  robot.respond /(cg|kill)/i, (msg) -> commands.cg(robot, msg)
-
-  robot.respond /format (.*)/i, (msg) -> commands.format(robot, msg)
-
-  robot.respond /((add)|(add (me|.*)))/i, (msg) -> commands.add(robot, msg)
-
-  robot.respond /((rem)|rem (me|.*))/i, (msg) -> commands.rem(robot, msg)
-
-  robot.respond /map (.*)/i, (msg) -> commands.map(robot, msg)
-
-  robot.respond /server (.*)/i, (msg) -> commands.server(robot, msg)
-
-  robot.respond /(status|games)/i, (msg) -> commands.status(robot, msg)
-
-  robot.respond /(previous|last game|lastgame|previous game)/i, (msg) -> commands.previous(robot, msg)
-
-  robot.respond /top (maps|players)/i, (msg) -> commands.top(robot, msg)
+  robot.respond /((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i, (msg) -> admin.sg.call(robot, msg)
+  robot.respond /(cg|kill)/i, (msg) -> admin.cg.call(robot, msg)
+  robot.respond /format (.*)/i, (msg) -> admin.format.call(robot, msg)
+  robot.respond /(random (.*) map|map (.*))/i, (msg) -> admin.map.call(robot, msg)
+  robot.respond /server (.*)/i, (msg) -> admin.server.call(robot, msg)
+  robot.respond /change (.*) to (.*)/i, (msg) -> admin.change.call(robot, msg)
