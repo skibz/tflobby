@@ -24,29 +24,26 @@
 # Author:
 #   skibz
 
-rcon = require('../src/commands/rcon.coffee')
-admin = require('../src/commands/admin.coffee')
-public = require('../src/commands/public.coffee')
-lifecycle = require('../src/commands/lifecycle.coffee')
+commands = require('../src/commands/index.coffee')
 
 module.exports = (robot) ->
 
-  robot.enter (msg) -> lifecycle.onEnter.call(robot, msg)
-  robot.leave (msg) -> lifecycle.onLeave.call(robot, msg)
-  robot.respond /(add|add (me|.*))/i, (msg) -> lifecycle.add.call(robot, msg)
-  robot.respond /(rem|rem (me|.*))/i, (msg) -> lifecycle.rem.call(robot, msg)
+  robot.enter (msg) -> commands.lifecycle.onEnter.call(robot, msg)
+  robot.leave (msg) -> commands.lifecycle.onLeave.call(robot, msg)
+  robot.respond /(add|add (me|.*))/i, (msg) -> commands.lifecycle.add.call(robot, msg)
+  robot.respond /(rem|rem (me|.*))/i, (msg) -> commands.lifecycle.rem.call(robot, msg)
 
-  robot.respond /(status|games)/i, (msg) -> public.status.call(robot, msg)
-  robot.respond /(previous|lastgame)/i, (msg) -> public.previous.call(robot, msg)
-  robot.respond /(top|today) (maps|players)/i, (msg) -> public.top.call(robot, msg)
+  robot.respond /(status|games)/i, (msg) -> commands.public.status.call(robot, msg)
+  robot.respond /(previous|lastgame)/i, (msg) -> commands.public.previous.call(robot, msg)
+  robot.respond /(top|today) (maps|players)/i, (msg) -> commands.public.top.call(robot, msg)
 
-  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> rcon.rconSay.call(robot, msg)
-  robot.respond /rcon send (list|the list|roster|players) on (.*)/i, (msg) -> rcon.rconRoster.call(robot, msg)
-  robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> rcon.rconMap.call(robot, msg)
+  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> commands.rcon.rconSay.call(robot, msg)
+  robot.respond /rcon send (list|the list|roster|players) on (.*)/i, (msg) -> commands.rcon.rconRoster.call(robot, msg)
+  robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> commands.rcon.rconMap.call(robot, msg)
 
-  robot.respond /((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i, (msg) -> admin.sg.call(robot, msg)
-  robot.respond /(cg|kill)/i, (msg) -> admin.cg.call(robot, msg)
-  robot.respond /format (.*)/i, (msg) -> admin.format.call(robot, msg)
-  robot.respond /(random (.*) map|map (.*))/i, (msg) -> admin.map.call(robot, msg)
-  robot.respond /server (.*)/i, (msg) -> admin.server.call(robot, msg)
-  robot.respond /change (.*) to (.*)/i, (msg) -> admin.change.call(robot, msg)
+  robot.respond /((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i, (msg) -> commands.admin.sg.call(robot, msg)
+  robot.respond /(cg|kill)/i, (msg) -> commands.admin.cg.call(robot, msg)
+  robot.respond /format (.*)/i, (msg) -> commands.admin.format.call(robot, msg)
+  robot.respond /(random (.*) map|map (.*))/i, (msg) -> commands.admin.map.call(robot, msg)
+  robot.respond /server (.*)/i, (msg) -> commands.admin.server.call(robot, msg)
+  robot.respond /change (.*) to (.*)/i, (msg) -> commands.admin.change.call(robot, msg)
