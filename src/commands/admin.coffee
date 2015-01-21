@@ -29,10 +29,8 @@ exports.sg = (msg) ->
         validMap = msg.match[2] in [popularMaps, allMaps]
         filtered = maps.filter (map) -> map.indexOf(msg.match[2]) isnt -1
 
-        map = if filtered.length is 1 then filtered[0] else msg.random(popularMaps)
-
         new Lobby(
-          map,
+          if filtered.length is 1 then filtered[0] else msg.random(popularMaps),
           user,
           @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
         )
