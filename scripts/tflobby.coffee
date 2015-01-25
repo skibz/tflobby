@@ -8,18 +8,19 @@
 #
 # Commands:
 #   hubot rcon [say|message|msg] <message> on <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
-#   hubot rcon [list|the list|roster|players] on <server> - sends the player roster from the previous lobby to <server>. limited to `rcon` roles.
+#   hubot rcon send [list|the list|roster|players] on <server> - sends the player roster from the previous lobby to <server>. limited to `rcon` roles.
 #   hubot rcon [change map|changelevel|map] on <server> to <mapname> - changes the map on <server> to <mapname>. limited to `rcon` roles.
-#   hubot [sg|new] <mapname> - creates a new lobby with the map set to <mapname>. limited to `officer` roles.
+#   hubot [[sg|new]|[[sg|new] <mapname>]|[sg|new] random <gamemode> map] - creates a new lobby with the map set to <mapname>. limited to `officer` roles.
 #   hubot [cg|kill] - cancels a running lobby. limited to `officer` roles.
 #   hubot format <nPlayers> - changes the number of players per side to nPlayers.
-#   hubot add <me|user> - adds <user> to the lobby. addition of other users is limited to `officer` roles.
-#   hubot rem <me|user> - removes <user> from the lobby. removal of other users is limited to `officer` roles.
-#   hubot map <mapname> - changes the lobby map to <mapname>. limited to `officer` roles.
+#   hubot [add|add <me|user>] - adds <user> to the lobby. addition of other users is limited to `officer` roles.
+#   hubot [rem|rem <me|user>] - removes <user> from the lobby. removal of other users is limited to `officer` roles.
+#   hubot [random <gamemode> map|map <mapname>] - changes lobby map to random of game mode or changes the lobby map to <mapname>. limited to `officer` roles.
 #   hubot server <servername> - changes the lobby server to <servername>. limited to `officer` roles.
 #   hubot [status|games] - reports the lobby status
 #   hubot [previous|last game|lastgame|previous game] - reports the previous lobby status
 #   hubot top <maps|players> - reports the daily counter data accumulated for either maps or players
+#   hubot change <property> to <value> - changes a tflobby bot setting
 #
 # Author:
 #   skibz
