@@ -134,12 +134,12 @@ exports.rem = (msg) ->
     players = lobby.names()
 
     unless lobby?
-      return msg.reply(":: no pickup filling - create one with !sg or !add...")
+      return msg.reply(':: no pickup filling - create one with !sg or !add...')
 
     if target in players
       lobby.rem(target)
       @brain.set('tflobby.lobby', lobby)
-      return msg.send(":: #{lobby.server} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : #{lobby.names().join(', ')} ::")
+      return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : #{lobby.names().join(', ')} ::")
 
     return msg.reply(":: #{if msg.match[1] is 'me' then 'you\'re not' else target + '\'s not'} added to the pickup...")
 
