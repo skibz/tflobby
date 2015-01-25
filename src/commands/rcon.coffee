@@ -49,7 +49,8 @@ exports.rconMap = (msg) ->
 
       if server.rcon?
 
-        filtered = maps.filter (map) -> map.indexOf(msg.match[2]) isnt -1
+        allMaps = @brain.get('tflobby.maps.all')
+        filtered = allMaps.filter (map) -> map.indexOf(msg.match[2]) isnt -1
 
         if filtered.length is 1
 

@@ -4,49 +4,41 @@ exports.sg = (msg) ->
   user = msg.message.user.id
 
   if @auth.hasRole(msg.envelope.user, 'officer')
-    lobby = @brain.get('tflobby.lobby')
 
-    if lobby?
+    unless not (lobby = @brain.get('tflobby.lobby'))?
       return msg.reply(":: a pickup's already filling...")
 
-    popularMaps = @brain.get('tflobby.maps.popular')
-    allMaps = @brain.get('tflobby.maps.all')
-
-    newWithoutOptions = msg.match.length is 1
-    newWithMap = msg.match.length is 2 and msg.match[0].indexOf('random') is -1
-    newWithRandomMap = msg.match.length is 2 and msg.match[0].indexOf('random') isnt -1 and msg.match[1].toLowerCase() in ['cp', 'ctf', 'koth']
+    randomPopular = msg.random(@brain.get('tflobby.maps.popular'))
+    defaultServer = @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
+    randomMapOfMode = msg.match[0].indexOf('random') isnt -1
 
     msg.reply(":: starting a new pickup...")
 
     created = switch true
-      when newWithoutOptions
+      when msg.match.length is 2 and not randomMapOfMode
+        filtered = @brain.get('tflobby.maps.all').filter (map) ->
+          map.indexOf(msg.match[2]) isnt -1
         new Lobby(
-          msg.random(popularMaps),
+          if filtered.length is 1 then filtered[0] else randomPopular,
           user,
-          @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
+          defaultServer
         )
-      when newWithMap
-        validMap = msg.match[2] in [popularMaps, allMaps]
-        filtered = maps.filter (map) -> map.indexOf(msg.match[2]) isnt -1
-
-        new Lobby(
-          if filtered.length is 1 then filtered[0] else msg.random(popularMaps),
-          user,
-          @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
-        )
-      when newWithRandomMap
+      when msg.match.length is 2 and msg.match[1].toLowerCase() in ['cp', 'ctf', 'koth'] and randomMapOfMode
         new Lobby(
           msg.random(@brain.get("tflobby.maps.#{msg.match[1].toLowerCase()}")),
           user,
-          @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
+          defaultServer
         )
       else
-        console.error('i dunno how we got here... ', msg.match)
-        null
+        new Lobby(
+          randomPopular,
+          user,
+          defaultServer
+        )
 
     @brain.set('tflobby.lobby', created)
 
-    return msg.send(":: #{created.server} : #{created.map} : 0/#{created.format()} : [  ] ::")
+    return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.format()} : [  ] ::")
 
   return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
@@ -54,30 +46,28 @@ exports.cg = (msg) ->
   user = msg.message.user.id
 
   if @auth.hasRole(msg.envelope.user, 'officer')
-    lobby = @brain.get('tflobby.lobby')
 
-    unless lobby?
+    unless (lobby = @brain.get('tflobby.lobby'))?
       return msg.reply("no pickup filling - create one with !sg or !add")
 
     @brain.set('tflobby.lobby', null)
 
     return msg.send(":: pickup cancelled...")
 
-  return msg.send("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
+  return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
 exports.format = (msg) ->
 
   user = msg.message.user.id
 
   if @auth.hasRole(msg.envelope.user, 'officer')
-    lobby = @brain.get('tflobby.lobby')
 
-    unless lobby?
+    unless (lobby = @brain.get('tflobby.lobby'))?
       return msg.reply(":: no pickup filling - create one with !sg or !add")
 
-    try
+    if msg.match[1].indexOf('.') is -1 and msg.match[1].indexOf(',') is -1
 
-      if msg.match[1].indexOf('.') is -1 and msg.match[1].indexOf(',') is -1
+      try
 
         format = parseInt(msg.match[1], 10)
 
@@ -93,11 +83,10 @@ exports.format = (msg) ->
 
         return msg.reply(":: pickups need at least one player per side...")
 
-      return msg.reply(":: this command only accepts integer values...")
+      catch e
+        return msg.reply(":: this command only accepts integer values...")
 
-    catch e
-
-      return msg.reply(":: this command only accepts integer values...")
+    return msg.reply(":: this command only accepts integer values...")
 
   return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
@@ -106,9 +95,7 @@ exports.map = (msg) ->
 
   if @auth.hasRole(msg.envelope.user, 'officer')
 
-    lobby = @brain.get('tflobby.lobby')
-
-    unless lobby?
+    unless (lobby = @brain.get('tflobby.lobby'))?
       return msg.reply(":: no pickup filling - create one with !sg or !add")
 
     if msg.match[0].indexOf('random') isnt -1
@@ -139,17 +126,17 @@ exports.server = (msg) ->
 
   if @auth.hasRole(msg.envelope.user, 'officer')
 
-    lobby = @brain.get('tflobby.lobby')
-
-    unless lobby?
+    unless (lobby = @brain.get('tflobby.lobby'))?
       return msg.reply("no pickup filling - create one with !sg or !add")
 
-    if msg.match[1] in @brain.get('tflobby.servers.names')
-      lobby.set('server', @brain.get('tflobby.servers')[msg.match[1]])
-      robot.brain.set('tflobby.lobby', lobby)
-      return msg.reply(":: server changed to `#{msg.match[1]}`...")
+    server = msg.match[1].toLowerCase()
 
-    return msg.reply(":: unknown server `#{msg.match[1]}`...")
+    if server in @brain.get('tflobby.servers.names')
+      lobby.set('server', @brain.get('tflobby.servers.all')[server])
+      robot.brain.set('tflobby.lobby', lobby)
+      return msg.reply(":: server changed to `#{server}`...")
+
+    return msg.reply(":: unknown server `#{server}`...")
 
   return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
@@ -159,18 +146,20 @@ exports.change = (msg) ->
 
     switch msg.match[1].toLowerCase()
 
-      when 'default server'
+      when 'default server' or 'defaultserver'
 
-        if msg.match[2] in @brain.get('tflobby.servers.names')
+        server = msg.match[2].toLowerCase()
 
-          @brain.set('tflobby.servers.default', msg.match[2])
-          return msg.reply(":: changed default server to `#{msg.match[2]}`...")
+        if server in @brain.get('tflobby.servers.names')
 
-        return msg.reply(":: invalid server `#{msg.match[2]}`...")
+          @brain.set('tflobby.servers.default', server)
+          return msg.reply(":: changed default server to `#{server}`...")
 
-      when 'popular maps'
+        return msg.reply(":: invalid server `#{server}`...")
 
-        popularMaps = msg.match[2].split(',')
+      when 'popular maps' or 'popularmaps'
+
+        popularMaps = msg.match[2].split(',').map (map) -> map.toLowerCase()
 
         if popularMaps.length > 2
 

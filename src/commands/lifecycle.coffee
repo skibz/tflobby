@@ -1,17 +1,15 @@
 Rcon = require('../rcon.coffee')
 Lobby = require('../lobby.coffee')
 
-finalising = (robot, msg) ->
+finalising = (msg) ->
 
-  lobby = robot.brain.get('tflobby.lobby')
-  server = robot.brain.get('tflobby.servers.all')[lobby.server]
+  return unless (lobby = @brain.get('tflobby.lobby'))?
+
+  server = @brain.get('tflobby.servers.all')[lobby.server.name]
   format = lobby.format()
 
-  return unless lobby?
-
   if lobby.added() isnt format
-    lobby.set('finalising', false)
-    robot.brain.set('tflobby.lobby', lobby)
+    @brain.set('tflobby.lobby', lobby.set('finalising', false))
     return msg.send(":: not enough players to begin: #{players.length}/#{format}...")
 
   return new Rcon(server, (ctx) ->
@@ -22,7 +20,7 @@ finalising = (robot, msg) ->
     ctx.close()
 
     players = lobby.names()
-    today = robot.brain.get('tflobby.today') ? { players: {}, maps: {} }
+    today = @brain.get('tflobby.today') ? { players: {}, maps: {} }
 
     if today.maps.hasOwnProperty(lobby.map)
       today.maps[lobby.map]++
@@ -35,8 +33,8 @@ finalising = (robot, msg) ->
       else
         today.players[player] = 1
 
-    robot.brain.set('tflobby.today', today)
-    robot.brain.set('tflobby.previous', lobby)
+    @brain.set('tflobby.today', today)
+    @brain.set('tflobby.previous', lobby)
 
     msg.send(":: paging doctors #{players.join(', ')}")
     msg.send(":: steam://connect/#{server.host}:#{server.port}/#{server.password}")
@@ -45,14 +43,14 @@ finalising = (robot, msg) ->
     msg.send(":: starting a new pickup...")
 
     created = new Lobby(
-      msg.random(robot.brain.get('tflobby.maps.popular')),
+      msg.random(@brain.get('tflobby.maps.popular')),
       'tfbot',
-      robot.brain.get('tflobby.servers.default'),
+      @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')],
       6
     )
 
-    robot.brain.set('tflobby.lobby', created)
-    return msg.send(":: #{created.server} : #{created.map} : 0/#{created.format()} : [  ] ::")
+    @brain.set('tflobby.lobby', created)
+    return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.format()} : [  ] ::")
   )
 
 exports.onEnter = (msg) ->
@@ -62,12 +60,12 @@ exports.onEnter = (msg) ->
 
   if lobby? and previous?
     msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
-    return msg.reply(":: current : #{lobby.server} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
+    return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
   else if lobby? and not previous?
     msg.reply(":: no previous pickup data...")
-    return msg.reply(":: current : #{lobby.server} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
+    return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
   else if not lobby? and previous?
-    msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
+    msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
     return msg.reply(":: no pickup is filling - !add or !sg to create one...")
   else
     msg.reply(":: no previous pickup data...")
@@ -84,7 +82,7 @@ exports.onLeave = (msg) ->
 
   lobby.rem(user)
   @brain.set('tflobby.lobby', lobby)
-  return msg.send(":: #{lobby.server} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
+  return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
 
 exports.add = (msg) ->
   user = msg.message.user.id
@@ -99,7 +97,7 @@ exports.add = (msg) ->
       lobby = new Lobby(
         msg.random(@brain.get('tflobby.maps.popular')),
         user,
-        @brain.get('tflobby.servers.default')
+        @brain.get('tflobby.servers.all')[@brain.get('tflobby.servers.default')]
       )
       @brain.set('tflobby.lobby', lobby)
 
@@ -112,11 +110,11 @@ exports.add = (msg) ->
         lobby.add(target)
         @brain.set('tflobby.lobby', lobby)
         added = lobby.added()
-        msg.send(":: #{lobby.server} : #{lobby.map} : #{added}/#{format} : [ #{lobby.names().join(', ')} ] ::")
+        msg.send(":: #{lobby.server.name} : #{lobby.map} : #{added}/#{format} : [ #{lobby.names().join(', ')} ] ::")
 
         return unless added is format and not lobby.finalising
 
-        return setTimeout(finalising, 60000, @, msg)
+        return setTimeout(finalising.bind(@), 60000, msg)
 
       return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if msg.match[1] is 'me' then 'you are' else target + ' is'} already added...")
 
@@ -125,6 +123,7 @@ exports.add = (msg) ->
   return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
 exports.rem = (msg) ->
+
   user = msg.message.user.id
   targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
   target = if targetingSelf then user else msg.match[1].trim()

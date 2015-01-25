@@ -37,13 +37,19 @@ module.exports = (robot) ->
     servers = JSON.parse(process.env.TFLOBBY_GAME_SERVERS)
   catch err
     console.error('[tflobby error]', err)
-    console.error('[tflobby error] TFLOBBY_GAME_SERVERS', process.env.TFLOBBY_GAME_SERVERS)
+    console.error(
+      '[tflobby error] TFLOBBY_GAME_SERVERS',
+      process.env.TFLOBBY_GAME_SERVERS
+    )
     process.exit(1)
 
   defaultServer = process.env.TFLOBBY_DEFAULT_SERVER
 
   if not defaultServer
-    console.error('[tflobby error] TFLOBBY_DEFAULT_SERVER', process.env.TFLOBBY_DEFAULT_SERVER)
+    console.error(
+      '[tflobby error] TFLOBBY_DEFAULT_SERVER',
+      process.env.TFLOBBY_DEFAULT_SERVER
+    )
     process.exit(1)
 
   # default maps
@@ -90,15 +96,6 @@ module.exports = (robot) ->
   robot.brain.set('tflobby.servers.all', servers)
   robot.brain.set('tflobby.servers.names', Object.keys(servers))
   robot.brain.set('tflobby.servers.default', defaultServer)
-
-  # console.log(robot.brain.get('tflobby.maps.all'))
-  # console.log(robot.brain.get("tflobby.maps.cp"))
-  # console.log(robot.brain.get("tflobby.maps.koth"))
-  # console.log(robot.brain.get("tflobby.maps.ctf"))
-  # console.log(robot.brain.get('tflobby.maps.popular'))
-  # console.log(robot.brain.get('tflobby.servers'))
-  # console.log(robot.brain.get('tflobby.servers.names'))
-  # console.log(robot.brain.get('tflobby.servers.default'))
 
   path = Path.resolve(__dirname, 'scripts')
 

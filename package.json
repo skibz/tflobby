@@ -1,36 +1,39 @@
 {
   "name": "tflobby",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "a lobby script designed for use in hubot",
   "main": "index.coffee",
   "scripts": {
     "test": "echo no test suite"
   },
   "keywords": [
-    "team",
-    "fortress",
-    "lobby",
-    "pug",
-    "pugs",
-    "pickup",
+    "PUG",
+    "pick up game",
+    "pick",
+    "up",
     "game",
-    "pickups",
-    "competitive",
+    "pickup",
     "esport",
     "esports",
+    "e-sport",
+    "e-sports",
     "rcon",
     "source",
+    "engine",
+    "source engine",
     "valve",
     "tf2"
   ],
   "dependencies": {
     "simple-rcon": "latest"
   },
+  "devDependencies": {
+    "coffee-script": "latest"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/skibz/tflobby.git"
   },
   "author": "ant cosentino",
-  "license": "unlicense",
-  "devDependencies": {}
+  "license": "unlicense"
 }
