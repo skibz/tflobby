@@ -104,7 +104,7 @@ exports.map = (msg) ->
 
       if type in ['cp', 'ctf', 'koth']
         random = msg.random(@brain.get("tflobby.maps.#{type}"))
-        lobby.set('map', random)
+        @brain.set('tflobby.lobby', lobby.set('map', random))
         return msg.reply(":: changed map to `#{random}`...")
 
       return msg.reply(":: invalid map type `#{type}`...")
@@ -112,9 +112,7 @@ exports.map = (msg) ->
     filtered = maps.filter (map) -> map.indexOf(msg.match[1]) isnt -1
 
     if filtered.length is 1
-
-      lobby.set('map', filtered[0])
-      @brain.set('tflobby.lobby', lobby)
+      @brain.set('tflobby.lobby', lobby.set('map', filtered[0]))
       return msg.reply(":: changing map to `#{filtered[0]}`...")
 
     return msg.reply(":: which map did you mean? #{filtered.join(', ')}...")
@@ -132,8 +130,10 @@ exports.server = (msg) ->
     server = msg.match[1].toLowerCase()
 
     if server in @brain.get('tflobby.servers.names')
-      lobby.set('server', @brain.get('tflobby.servers.all')[server])
-      robot.brain.set('tflobby.lobby', lobby)
+      robot.brain.set(
+        'tflobby.lobby',
+        lobby.set('server', @brain.get('tflobby.servers.all')[server])
+      )
       return msg.reply(":: server changed to `#{server}`...")
 
     return msg.reply(":: unknown server `#{server}`...")
