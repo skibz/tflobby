@@ -25,12 +25,13 @@
 # Author:
 #   skibz
 
-commands = require('../src/commands/index.coffee')
+commands = require('../src/commands')
 
 module.exports = (robot) ->
 
   robot.enter (msg) -> commands.lifecycle.onEnter.call(robot, msg)
   robot.leave (msg) -> commands.lifecycle.onLeave.call(robot, msg)
+
   robot.respond /(add|add (me|.*))/i, (msg) -> commands.lifecycle.add.call(robot, msg)
   robot.respond /(rem|rem (me|.*))/i, (msg) -> commands.lifecycle.rem.call(robot, msg)
 

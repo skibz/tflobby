@@ -1,35 +1,44 @@
-topToday = (entity) ->
+
+topToday = (metric) ->
 
   unless (today = @brain.get('tflobby.today'))?
-    @brain.set('tflobby.today', {players: {}, maps: {}})
-    return 'i haven\'t captured any daily data yet...'
+    @brain.set(
+      'tflobby.today',
+      {
+        players: {},
+        maps: {}
+      }
+    )
+    return ':: i haven\'t captured any daily data yet...'
 
-  response = '||'
+  response = '::'
 
-  unless Object.keys(today[entity]).length
-    return "i haven't captured any daily #{entity} data yet..."
+  unless Object.keys(today[metric]).length
+    return "i haven't captured any daily #{metric} data yet..."
 
-  response += " #{entity}: #{times} |" for entity, times of today[entity]
-  return "#{response}|"
+  response += " #{thing} (#{times}) :" for thing, times of today[metric]
+  return "#{response}:"
 
-exports.status = (msg) ->
+module.exports =
 
-  unless (lobby = @brain.get('tflobby.lobby'))?
-    return msg.reply(":: no pickup to report - create one with !sg or !add")
+  status: (msg) ->
 
-  return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.players().join(', ')} ] ::")
+    unless (lobby = @brain.get('tflobby.lobby'))?
+      return msg.reply(":: no pickup to report - create one with !sg or !add")
 
-exports.previous = (msg) ->
+    return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.players().join(', ')} ] ::")
 
-  unless (previous = @brain.get('tflobby.previous'))?
-    return msg.reply(":: no previous match data...")
+  previous: (msg) ->
 
-  return msg.send(":: started by #{previous.principal} : #{previous.server.name} : #{previous.map} : [ #{previous.names().join(', ')} ] : #{new Date(previous.createdAt).toString()} ::")
+    unless (previous = @brain.get('tflobby.previous'))?
+      return msg.reply(":: no previous match data...")
 
-exports.top = (msg) ->
+    return msg.send(":: started by #{previous.principal} : #{previous.server.name} : #{previous.map} : [ #{previous.names().join(', ')} ] : #{new Date(previous.createdAt).toString()} ::")
 
-  if msg.match[1] in ['maps', 'players']
+  top: (msg) ->
 
-    return msg.reply(":: #{topToday.call(@, msg.match[1])}")
+    if msg.match[1] in ['maps', 'players']
 
-  return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.mistake'))} i don't keep track of those things...")
+      return msg.reply(topToday.call(@, msg.match[1]))
+
+    return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.mistake'))} i don't keep track of those things...")

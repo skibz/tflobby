@@ -53,94 +53,96 @@ finalising = (msg) ->
     return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.format()} : [  ] ::")
   )
 
-exports.onEnter = (msg) ->
+module.exports =
 
-  lobby = @brain.get('tflobby.lobby')
-  previous = @brain.get('tflobby.previous')
-
-  if lobby? and previous?
-    msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
-    return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
-  else if lobby? and not previous?
-    msg.reply(":: no previous pickup data...")
-    return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
-  else if not lobby? and previous?
-    msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
-    return msg.reply(":: no pickup is filling - !add or !sg to create one...")
-  else
-    msg.reply(":: no previous pickup data...")
-    return msg.reply(":: no pickup is filling - !add or !sg to create one...")
-
-exports.onLeave = (msg) ->
-  lobby = @brain.get('tflobby.lobby')
-
-  return unless lobby?
-
-  user = msg.message.user.id
-
-  return unless user in players
-
-  lobby.rem(user)
-  @brain.set('tflobby.lobby', lobby)
-  return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
-
-exports.add = (msg) ->
-  user = msg.message.user.id
-  targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
-  target = if targetingSelf then user else msg.match[1].trim()
-
-  if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
+  onEnter: (msg) ->
 
     lobby = @brain.get('tflobby.lobby')
+    previous = @brain.get('tflobby.previous')
 
-    unless lobby?
-      lobby = new Lobby(
-        msg.random(@brain.get('tflobby.maps.popular')),
-        user,
-        @brain.get('tflobby.servers.all')[@brain.get('tflobby.servers.default')]
-      )
-      @brain.set('tflobby.lobby', lobby)
+    if lobby? and previous?
+      msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
+      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
+    else if lobby? and not previous?
+      msg.reply(":: no previous pickup data...")
+      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
+    else if not lobby? and previous?
+      msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{previous.names().join(', ')} ] ::")
+      return msg.reply(":: no pickup is filling - !add or !sg to create one...")
+    else
+      msg.reply(":: no previous pickup data...")
+      return msg.reply(":: no pickup is filling - !add or !sg to create one...")
 
-    players = lobby.names()
-    format = lobby.format()
+  onLeave: (msg) ->
+    lobby = @brain.get('tflobby.lobby')
 
-    if lobby.added() < format
+    return unless lobby?
 
-      if target not in players
-        lobby.add(target)
+    user = msg.message.user.id
+
+    return unless user in players
+
+    lobby.rem(user)
+    @brain.set('tflobby.lobby', lobby)
+    return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.names().join(', ')} ] ::")
+
+  add: (msg) ->
+    user = msg.message.user.id
+    targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
+    target = if targetingSelf then user else msg.match[1].trim()
+
+    if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
+
+      lobby = @brain.get('tflobby.lobby')
+
+      unless lobby?
+        lobby = new Lobby(
+          msg.random(@brain.get('tflobby.maps.popular')),
+          user,
+          @brain.get('tflobby.servers.all')[@brain.get('tflobby.servers.default')]
+        )
         @brain.set('tflobby.lobby', lobby)
-        added = lobby.added()
-        msg.send(":: #{lobby.server.name} : #{lobby.map} : #{added}/#{format} : [ #{lobby.names().join(', ')} ] ::")
 
-        return unless added is format and not lobby.finalising
+      players = lobby.names()
+      format = lobby.format()
 
-        return setTimeout(finalising.bind(@), 60000, msg)
+      if lobby.added() < format
 
-      return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if msg.match[1] is 'me' then 'you are' else target + ' is'} already added...")
+        if target not in players
+          lobby.add(target)
+          @brain.set('tflobby.lobby', lobby)
+          added = lobby.added()
+          msg.send(":: #{lobby.server.name} : #{lobby.map} : #{added}/#{format} : [ #{lobby.names().join(', ')} ] ::")
 
-    return msg.reply(":: the pickup is full...")
+          return unless added is format and not lobby.finalising
 
-  return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
+          return setTimeout(finalising.bind(@), 60000, msg)
 
-exports.rem = (msg) ->
+        return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if msg.match[1] is 'me' then 'you are' else target + ' is'} already added...")
 
-  user = msg.message.user.id
-  targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
-  target = if targetingSelf then user else msg.match[1].trim()
+      return msg.reply(":: the pickup is full...")
 
-  if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
+    return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
-    lobby = @brain.get('tflobby.lobby')
-    players = lobby.names()
+  rem: (msg) ->
 
-    unless lobby?
-      return msg.reply(':: no pickup filling - create one with !sg or !add...')
+    user = msg.message.user.id
+    targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
+    target = if targetingSelf then user else msg.match[1].trim()
 
-    if target in players
-      lobby.rem(target)
-      @brain.set('tflobby.lobby', lobby)
-      return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : #{lobby.names().join(', ')} ::")
+    if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
 
-    return msg.reply(":: #{if msg.match[1] is 'me' then 'you\'re not' else target + '\'s not'} added to the pickup...")
+      lobby = @brain.get('tflobby.lobby')
+      players = lobby.names()
 
-  return msg.reply("#{msg.random(robot.brain.get('tflobby.chat.mistake'))} you can't do that...")
+      unless lobby?
+        return msg.reply(':: no pickup filling - create one with !sg or !add...')
+
+      if target in players
+        lobby.rem(target)
+        @brain.set('tflobby.lobby', lobby)
+        return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : #{lobby.names().join(', ')} ::")
+
+      return msg.reply(":: #{if msg.match[1] is 'me' then 'you\'re not' else target + '\'s not'} added to the pickup...")
+
+    return msg.reply("#{msg.random(robot.brain.get('tflobby.chat.mistake'))} you can't do that...")
