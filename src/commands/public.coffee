@@ -26,14 +26,14 @@ module.exports =
     unless (lobby = @brain.get('tflobby.lobby'))?
       return msg.reply(":: no pickup to report - create one with !sg or !add")
 
-    return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.added()}/#{lobby.format()} : [ #{lobby.players().join(', ')} ] ::")
+    return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
   previous: (msg) ->
 
     unless (previous = @brain.get('tflobby.previous'))?
       return msg.reply(":: no previous match data...")
 
-    return msg.send(":: started by #{previous.principal} : #{previous.server.name} : #{previous.map} : [ #{previous.names().join(', ')} ] : #{new Date(previous.createdAt).toString()} ::")
+    return msg.send(":: started by #{previous.principal} : #{previous.server.name} : #{previous.map} : [ #{previous.players().join(', ')} ] : #{new Date(previous.createdAt).toString()} ::")
 
   top: (msg) ->
 

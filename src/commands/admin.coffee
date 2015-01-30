@@ -3,18 +3,18 @@ Lobby = require('../lobby.coffee')
 module.exports =
   sg: (msg) ->
 
-    user = msg.message.user.id
-
     if @auth.hasRole(msg.envelope.user, 'officer')
+
+      user = msg.message.user.id
 
       if (lobby = @brain.get('tflobby.lobby'))?
         return msg.reply(":: a pickup is already filling...")
 
       randomPopular = msg.random(@brain.get('tflobby.maps.popular'))
-      defaultServer = @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
+      defaultServer = @brain.get('tflobby.servers.all')[@brain.get('tflobby.servers.default')]
       randomMapOfMode = msg.match[0].indexOf('random') isnt -1
 
-      msg.reply(":: starting a new pickup...")
+      msg.send(":: starting a new pickup...")
 
       created = switch true
         when msg.match.length is 2 and not randomMapOfMode
@@ -40,7 +40,7 @@ module.exports =
 
       @brain.set('tflobby.lobby', created)
 
-      return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.format()} : [  ] ::")
+      return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.slots()} : [  ] ::")
 
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
@@ -77,8 +77,7 @@ module.exports =
 
             if format < 13
 
-              lobby.set('playersPerSide', format)
-              @brain.set('tflobby.lobby', lobby)
+              @brain.set('tflobby.lobby', lobby.set('playersPerSide', format))
               return msg.reply(":: players per side set to `#{format}`...")
 
             return msg.reply(":: pickups can have up to twelve players per side...")

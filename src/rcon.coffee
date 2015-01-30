@@ -3,9 +3,10 @@ srcon = require('simple-rcon')
 class Rcon
 
   constructor: (server, fn) ->
-    @server = server
 
-    ctx = new srcon(@server.host, @server.port, @server.rcon)
+    return unless server?
+
+    ctx = new srcon(server.host, server.port, server.rcon)
 
     ctx
       .on 'error', (err) -> console.error('rcon error', err)

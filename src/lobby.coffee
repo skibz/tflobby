@@ -1,7 +1,8 @@
 class Lobby
 
-  constructor: (@map, @principal, @server, format) ->
-    @playersPerSide = format ? 6
+  # constructor: (@map, @principal, @server) ->
+  constructor: (@map, @principal, @server) ->
+    @playersPerSide = 6
     @createdAt = (new Date()).toJSON()
     @players = {}
     @finalising = false
@@ -10,21 +11,21 @@ class Lobby
    * return total available slots for the lobby
    * @return {number}
   ###
-  format: ->
+  slots: ->
     return @playersPerSide * 2
 
   ###*
    * return an array of participating players
    * @return {array}
   ###
-  names: ->
+  players: ->
     return Object.keys(@players)
 
   ###*
    * return the number of participating players
    * @return {number}
   ###
-  added: ->
+  totalPlayers: ->
     return Object.keys(@players).length
 
   ###*
@@ -46,6 +47,14 @@ class Lobby
     return @
 
   ###*
+   * whether the given player has added to the lobby
+   * @param  {string}  player name of player
+   * @return {Boolean}        if player has added
+  ###
+  isAdded: (player) ->
+    return player in Object.keys(@players)
+
+  ###*
    * change a given property to value
    * @param {string} property name of property
    * @param {mixed}  value    value of property
@@ -55,5 +64,13 @@ class Lobby
     if {}.hasOwnProperty.call(@, property)
       @[property] = value
     return @
+
+  ###*
+   * return the value of the given property
+   * @param  {string} property name of the object property
+   * @return {mixed}           the property's value
+  ###
+  get: (property) ->
+    return @[property]
 
 module.exports = Lobby
