@@ -99,7 +99,7 @@ module.exports = (robot) ->
 
   path = Path.resolve(__dirname, 'scripts')
 
-  fs.exists(path, (exists) ->
+  fs.exists path, (exists) ->
     if not exists
       console.error("#{path} don't exist")
       process.exit(1)
@@ -107,4 +107,3 @@ module.exports = (robot) ->
     for file in fs.readdirSync(path)
       robot.loadFile(path, file)
       robot.parseHelp(Path.join(path, file))
-  )

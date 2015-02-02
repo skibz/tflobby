@@ -1,6 +1,12 @@
 Rcon = require('../rcon.coffee')
 Lobby = require('../lobby.coffee')
 
+# authorise = (msg) ->
+#   user = msg.message.user.id
+#   targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
+#   target = if targetingSelf then user else msg.match[1].trim()
+#   permitted = targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
+
 finalising = (msg) ->
 
   return unless (lobby = @brain.get('tflobby.lobby'))?
@@ -90,8 +96,9 @@ module.exports =
     user = msg.message.user.id
     targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
     target = if targetingSelf then user else msg.match[1].trim()
+    permitted = targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
-    if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
+    if permitted
 
       lobby = @brain.get('tflobby.lobby')
 
@@ -129,7 +136,7 @@ module.exports =
     targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
     target = if targetingSelf then user else msg.match[1].trim()
 
-    if targetingSelf or (not targetingSelf and robot.auth.hasRole(msg.envelope.user, 'officer'))
+    if targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
       lobby = @brain.get('tflobby.lobby')
       players = lobby.players()
