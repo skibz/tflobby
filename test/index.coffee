@@ -25,8 +25,8 @@ describe 'tfbot', ->
 
       it 'should register respond listeners', ->
 
-        expect(@robot.respond).to.have.been.calledWith(/add (me|.*)|add/i)
-        expect(@robot.respond).to.have.been.calledWith(/rem (me|.*)|rem/i)
+        expect(@robot.respond).to.have.been.calledWith(/add (.*)|add/i)
+        expect(@robot.respond).to.have.been.calledWith(/rem (.*)|rem/i)
 
     describe 'commands', ->
 
@@ -34,17 +34,17 @@ describe 'tfbot', ->
 
         it 'should match with input strings', ->
 
-          expect('add').to.match(/add (me|.*)|add/i)
-          expect('add me').to.match(/add (me|.*)|add/i)
-          expect('add abc').to.match(/add (me|.*)|add/i)
+          expect('add').to.match(/add (.*)|add/i)
+          expect('add me').to.match(/add (.*)|add/i)
+          expect('add abc').to.match(/add (.*)|add/i)
 
       describe '!rem', ->
 
         it 'should match with input strings', ->
 
-          expect('rem').to.match(/rem (me|.*)|rem/i)
-          expect('rem me').to.match(/rem (me|.*)|rem/i)
-          expect('rem abc').to.match(/rem (me|.*)|rem/i)
+          expect('rem').to.match(/rem (.*)|rem/i)
+          expect('rem me').to.match(/rem (.*)|rem/i)
+          expect('rem abc').to.match(/rem (.*)|rem/i)
 
   describe 'community module', ->
 

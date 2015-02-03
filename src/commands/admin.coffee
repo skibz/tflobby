@@ -1,4 +1,4 @@
-Lobby = require('../lobby.coffee')
+Lobby = require('../lib/lobby.coffee')
 
 module.exports =
   sg: (msg) ->

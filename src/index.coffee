@@ -37,8 +37,8 @@ module.exports = (robot) ->
   robot.enter (msg) -> lifecycle.onEnter.call(robot, msg)
   robot.leave (msg) -> lifecycle.onLeave.call(robot, msg)
 
-  robot.respond /add (me|.*)|add/i, (msg) -> lifecycle.add.call(robot, msg)
-  robot.respond /rem (me|.*)|rem/i, (msg) -> lifecycle.rem.call(robot, msg)
+  robot.respond /add (.*)|add/i, (msg) -> lifecycle.add.call(robot, msg)
+  robot.respond /rem (.*)|rem/i, (msg) -> lifecycle.rem.call(robot, msg)
 
   robot.respond /status|games/i, (msg) -> community.status.call(robot, msg)
   robot.respond /previous|lastgame/i, (msg) -> community.previous.call(robot, msg)

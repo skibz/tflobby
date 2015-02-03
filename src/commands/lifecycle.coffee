@@ -1,5 +1,5 @@
-Rcon = require('../rcon.coffee')
-Lobby = require('../lobby.coffee')
+Rcon = require('../lib/rcon.coffee')
+Lobby = require('../lib/lobby.coffee')
 
 # authorise = (msg) ->
 #   user = msg.message.user.id
@@ -94,7 +94,7 @@ module.exports =
   add: (msg) ->
 
     user = msg.message.user.id
-    targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
+    targetingSelf = msg.match.length is 1
     target = if targetingSelf then user else msg.match[1].trim()
     permitted = targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
@@ -124,7 +124,7 @@ module.exports =
 
           return setTimeout(finalising.bind(@, msg), 60000)
 
-        return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if msg.match[1] is 'me' then 'you are' else target + ' is'} already added...")
+        return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if targetingSelf then 'you are' else target + ' is'} already added...")
 
       return msg.reply(":: the pickup is full...")
 
@@ -133,7 +133,7 @@ module.exports =
   rem: (msg) ->
 
     user = msg.message.user.id
-    targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
+    targetingSelf = msg.match.length is 1
     target = if targetingSelf then user else msg.match[1].trim()
 
     if targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
@@ -148,6 +148,6 @@ module.exports =
         @brain.set('tflobby.lobby', lobby.rem(target))
         return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : #{lobby.players().join(', ')} ::")
 
-      return msg.reply(":: #{if msg.match[1] is 'me' then 'you\'re not' else target + '\'s not'} added to the pickup...")
+      return msg.reply(":: #{if targetingSelf then 'you\'re not' else target + '\'s not'} added to the pickup...")
 
     return msg.reply("#{msg.random(robot.brain.get('tflobby.chat.mistake'))} you can't do that...")

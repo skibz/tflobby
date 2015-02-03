@@ -105,5 +105,8 @@ module.exports = (robot) ->
       process.exit(1)
 
     for file in fs.readdirSync(path)
-      robot.loadFile(path, file)
-      robot.parseHelp(Path.join(path, file))
+      try
+        robot.loadFile(path, file)
+        robot.parseHelp(Path.join(path, file))
+      catch err
+        console.error(err)
