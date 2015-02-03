@@ -12,7 +12,7 @@ describe 'tfbot', ->
       leave   : sinon.spy()
       respond : sinon.spy()
 
-    require('../src')(@robot)
+    require('../src/index.coffee')(@robot)
 
   describe 'lifecycle commands', ->
 
@@ -23,46 +23,46 @@ describe 'tfbot', ->
 
     it 'should register respond listeners', ->
 
-      expect(@robot.respond).to.have.been.calledWith(/(add|add (me|.*))/i)
-      expect(@robot.respond).to.have.been.calledWith(/(rem|rem (me|.*))/i)
+      expect(@robot.respond).to.have.been.calledWith(/add (me|.*)|add/i)
+      expect(@robot.respond).to.have.been.calledWith(/rem (me|.*)|rem/i)
 
     describe '!add', ->
 
       it 'should match with input strings', ->
 
-        expect('add').to.match(/(add|add (me|.*))/i)
-        expect('add me').to.match(/(add|add (me|.*))/i)
-        expect('add abc').to.match(/(add|add (me|.*))/i)
+        expect('add').to.match(/add (me|.*)|add/i)
+        expect('add me').to.match(/add (me|.*)|add/i)
+        expect('add abc').to.match(/add (me|.*)|add/i)
 
     describe '!rem', ->
 
       it 'should match with input strings', ->
 
-        expect('rem').to.match(/(rem|rem (me|.*))/i)
-        expect('rem me').to.match(/(rem|rem (me|.*))/i)
-        expect('rem abc').to.match(/(rem|rem (me|.*))/i)
+        expect('rem').to.match(/rem (me|.*)|rem/i)
+        expect('rem me').to.match(/rem (me|.*)|rem/i)
+        expect('rem abc').to.match(/rem (me|.*)|rem/i)
 
   describe 'community commands', ->
 
     it 'should register respond listeners', ->
 
-      expect(@robot.respond).to.have.been.calledWith(/(status|games)/i)
-      expect(@robot.respond).to.have.been.calledWith(/(previous|lastgame)/i)
+      expect(@robot.respond).to.have.been.calledWith(/status|games/i)
+      expect(@robot.respond).to.have.been.calledWith(/previous|lastgame/i)
       expect(@robot.respond).to.have.been.calledWith(/(top|today) (maps|players)/i)
 
     describe '!status', ->
 
       it 'should match with input strings', ->
 
-        expect('status').to.match(/(status|games)/i)
-        expect('games').to.match(/(status|games)/i)
+        expect('status').to.match(/status|games/i)
+        expect('games').to.match(/status|games/i)
 
     describe '!previous', ->
 
       it 'should match with input strings', ->
 
-        expect('previous').to.match(/(previous|lastgame)/i)
-        expect('lastgame').to.match(/(previous|lastgame)/i)
+        expect('previous').to.match(/previous|lastgame/i)
+        expect('lastgame').to.match(/previous|lastgame/i)
 
     describe '!top', ->
 
@@ -110,10 +110,10 @@ describe 'tfbot', ->
 
     it 'should register respond listeners', ->
 
-      expect(@robot.respond).to.have.been.calledWith(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
-      expect(@robot.respond).to.have.been.calledWith(/(cg|kill)/i)
+      expect(@robot.respond).to.have.been.calledWith(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+      expect(@robot.respond).to.have.been.calledWith(/cg|kill/i)
       expect(@robot.respond).to.have.been.calledWith(/format (.*)/i)
-      expect(@robot.respond).to.have.been.calledWith(/(random (.*) map|map (.*))/i)
+      expect(@robot.respond).to.have.been.calledWith(/(random (.*) map)|(map (.*))/i)
       expect(@robot.respond).to.have.been.calledWith(/server (.*)/i)
       expect(@robot.respond).to.have.been.calledWith(/change (.*) to (.*)/i)
 
@@ -121,19 +121,19 @@ describe 'tfbot', ->
 
       it 'should match with input strings', ->
 
-        expect('sg').to.match(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
-        expect('new').to.match(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
-        expect('sg abc').to.match(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
-        expect('new abc').to.match(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
-        expect('sg random abc map').to.match(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
-        expect('new random abc map').to.match(/((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i)
+        expect('sg').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect('new').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect('sg abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect('new abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect('sg random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect('new random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
 
     describe '!cg', ->
 
       it 'should match with input strings', ->
 
-        expect('cg').to.match(/(cg|kill)/i)
-        expect('kill').to.match(/(cg|kill)/i)
+        expect('cg').to.match(/cg|kill/i)
+        expect('kill').to.match(/cg|kill/i)
 
     describe '!format', ->
 
@@ -145,8 +145,8 @@ describe 'tfbot', ->
 
       it 'should match with input strings', ->
 
-        expect('random abc map').to.match(/(random (.*) map|map (.*))/i)
-        expect('map abc').to.match(/(random (.*) map|map (.*))/i)
+        expect('random abc map').to.match(/(random (.*) map)|(map (.*))/i)
+        expect('map abc').to.match(/(random (.*) map)|(map (.*))/i)
 
     describe '!server', ->
 

@@ -30,27 +30,27 @@
 # Author:
 #   skibz
 
-{ lifecycle, community, rcon, admin } = require('../src/commands')
+{ lifecycle, community, rcon, admin } = require('../src/commands/index.coffee')
 
 module.exports = (robot) ->
 
   robot.enter (msg) -> lifecycle.onEnter.call(robot, msg)
   robot.leave (msg) -> lifecycle.onLeave.call(robot, msg)
 
-  robot.respond /(add|add (me|.*))/i, (msg) -> lifecycle.add.call(robot, msg)
-  robot.respond /(rem|rem (me|.*))/i, (msg) -> lifecycle.rem.call(robot, msg)
+  robot.respond /add (me|.*)|add/i, (msg) -> lifecycle.add.call(robot, msg)
+  robot.respond /rem (me|.*)|rem/i, (msg) -> lifecycle.rem.call(robot, msg)
 
-  robot.respond /(status|games)/i, (msg) -> community.status.call(robot, msg)
-  robot.respond /(previous|lastgame)/i, (msg) -> community.previous.call(robot, msg)
+  robot.respond /status|games/i, (msg) -> community.status.call(robot, msg)
+  robot.respond /previous|lastgame/i, (msg) -> community.previous.call(robot, msg)
   robot.respond /(top|today) (maps|players)/i, (msg) -> community.top.call(robot, msg)
 
   robot.respond /rcon (say|message|msg) (.*) to (.*)/i, (msg) -> rcon.rconSay.call(robot, msg)
   robot.respond /rcon send (list|the list|roster|players) to (.*)/i, (msg) -> rcon.rconRoster.call(robot, msg)
   robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> rcon.rconMap.call(robot, msg)
 
-  robot.respond /((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i, (msg) -> admin.sg.call(robot, msg)
-  robot.respond /(cg|kill)/i, (msg) -> admin.cg.call(robot, msg)
+  robot.respond /((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i, (msg) -> admin.sg.call(robot, msg)
+  robot.respond /cg|kill/i, (msg) -> admin.cg.call(robot, msg)
   robot.respond /format (.*)/i, (msg) -> admin.format.call(robot, msg)
-  robot.respond /(random (.*) map|map (.*))/i, (msg) -> admin.map.call(robot, msg)
+  robot.respond /(random (.*) map)|(map (.*))/i, (msg) -> admin.map.call(robot, msg)
   robot.respond /server (.*)/i, (msg) -> admin.server.call(robot, msg)
   robot.respond /change (.*) to (.*)/i, (msg) -> admin.change.call(robot, msg)
