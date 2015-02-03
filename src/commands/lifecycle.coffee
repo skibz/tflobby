@@ -1,5 +1,5 @@
-Rcon = require('../lib/rcon.coffee')
-Lobby = require('../lib/lobby.coffee')
+Rcon = require('../rcon.coffee')
+Lobby = require('../lobby.coffee')
 
 finalising = (msg) ->
 

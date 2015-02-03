@@ -1,4 +1,4 @@
-Rcon = require('../lib/rcon.coffee')
+Rcon = require('../rcon.coffee')
 
 module.exports =
 

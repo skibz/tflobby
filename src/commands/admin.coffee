@@ -1,4 +1,4 @@
-Lobby = require('../lib/lobby.coffee')
+Lobby = require('../lobby.coffee')
 
 module.exports =
 

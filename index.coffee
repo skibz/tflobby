@@ -100,13 +100,10 @@ module.exports = (robot) ->
   path = Path.resolve(__dirname, 'src')
 
   fs.exists path, (exists) ->
-    if not exists
+
+    unless exists
       console.error("#{path} don't exist")
       process.exit(1)
 
-    for file in fs.readdirSync(path)
-      try
-        robot.loadFile(path, file)
-        robot.parseHelp(Path.join(path, file))
-      catch err
-        console.error(err)
+    robot.loadFile(path, 'index.coffee')
+    robot.parseHelp(Path.join(path, 'index.coffee'))
