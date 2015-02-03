@@ -111,16 +111,19 @@ module.exports =
       players = lobby.players()
       format = lobby.slots()
 
-      if lobby.totalPlayers() < format
+      unless lobby.isFull()
 
         unless lobby.isAdded(target)
           @brain.set('tflobby.lobby', lobby.add(target))
           added = lobby.totalPlayers()
           msg.send(":: #{lobby.server.name} : #{lobby.map} : #{added}/#{format} : [ #{lobby.players().join(', ')} ] ::")
 
-          return unless added is format and not lobby.finalising
+          return unless lobby.isFull() and not lobby.finalising
 
-          return setTimeout(finalising.bind(@, msg), 60000)
+          return @brain.set(
+            'tflobby.lobby.timer',
+            setTimeout(finalising.bind(@, msg), 60000)
+          )
 
         return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if targetingSelf then 'you are' else target + ' is'} already added...")
 
