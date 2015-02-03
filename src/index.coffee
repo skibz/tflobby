@@ -1,6 +1,9 @@
 # Description:
 #   exposes a set of commands for handling team fortress lobbies
 #
+# Dependencies:
+#   simple-rcon
+#
 # Configuration:
 #   TFLOBBY_MAPS - a comma separated list of map names.
 #   TFLOBBY_POPULAR_MAPS - a comma separated list of the most played maps
@@ -25,7 +28,7 @@
 # Author:
 #   skibz
 
-{ lifecycle, public, rcon, admin } = require('../src/commands')
+{ lifecycle, community, rcon, admin } = require('../src/commands')
 
 module.exports = (robot) ->
 
@@ -35,9 +38,9 @@ module.exports = (robot) ->
   robot.respond /(add|add (me|.*))/i, (msg) -> lifecycle.add.call(robot, msg)
   robot.respond /(rem|rem (me|.*))/i, (msg) -> lifecycle.rem.call(robot, msg)
 
-  robot.respond /(status|games)/i, (msg) -> public.status.call(robot, msg)
-  robot.respond /(previous|lastgame)/i, (msg) -> public.previous.call(robot, msg)
-  robot.respond /(top|today) (maps|players)/i, (msg) -> public.top.call(robot, msg)
+  robot.respond /(status|games)/i, (msg) -> community.status.call(robot, msg)
+  robot.respond /(previous|lastgame)/i, (msg) -> community.previous.call(robot, msg)
+  robot.respond /(top|today) (maps|players)/i, (msg) -> community.top.call(robot, msg)
 
   robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> rcon.rconSay.call(robot, msg)
   robot.respond /rcon send (list|the list|roster|players) on (.*)/i, (msg) -> rcon.rconRoster.call(robot, msg)

@@ -7,9 +7,11 @@
 - [x] clean up the source a little - change control flow structures, use `unless` instead of `if not`, etc.
 - [x] remove any steam group announcement stuff
 - [x] change the `servers` data structure to be dynamically created at runtime using an env var.
-- [ ] add arena maps to index.coffee/maps variable
-- [/] update documentation and figure out the current docs format for hubot scripts...
-- [/] find places to optimise the system. for instance, if a command *always* issues a random result, run the randomiser at the beginning of the function
+- [x] update documentation and figure out the current docs format for hubot scripts...
+- [x] find places to optimise the system. for instance, if a command *always* issues a random result, run the randomiser at the beginning of the function
 - [x] create this function: function isAdded(String player):boolean {} on the lobby prototype
 - [x] change the names of lobby functions for clarity
 - [x] attend to the commented changes in Lobby.coffee
+- [x] add a test suite
+- [ ] improve the test suite
+- [ ] add arena maps to index.coffee/maps variable

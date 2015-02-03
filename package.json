@@ -1,34 +1,31 @@
 {
   "name": "tflobby",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "a lobby script designed for use in hubot",
   "main": "index.coffee",
   "scripts": {
-    "test": "echo no test suite"
+    "test": "./scripts/test",
+    "postinstall": "chmod u+x scripts/test"
   },
   "keywords": [
-    "PUG",
-    "pick up game",
-    "pick",
-    "up",
-    "game",
     "pickup",
-    "esport",
     "esports",
-    "e-sport",
     "e-sports",
     "rcon",
-    "source",
-    "engine",
     "source engine",
     "valve",
+    "team fortress",
     "tf2"
   ],
   "dependencies": {
     "simple-rcon": "latest"
   },
   "devDependencies": {
-    "coffee-script": "latest"
+    "coffee-script": "latest",
+    "mocha": "*",
+    "chai": "*",
+    "sinon-chai": "*",
+    "sinon": "*"
   },
   "repository": {
     "type": "git",
