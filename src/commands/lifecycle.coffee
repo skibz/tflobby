@@ -108,15 +108,11 @@ module.exports =
         )
         @brain.set('tflobby.lobby', lobby)
 
-      players = lobby.players()
-      format = lobby.slots()
-
       unless lobby.isFull()
 
         unless lobby.isAdded(target)
           @brain.set('tflobby.lobby', lobby.add(target))
-          added = lobby.totalPlayers()
-          msg.send(":: #{lobby.server.name} : #{lobby.map} : #{added}/#{format} : [ #{lobby.players().join(', ')} ] ::")
+          msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
           return unless lobby.isFull() and not lobby.finalising
 
