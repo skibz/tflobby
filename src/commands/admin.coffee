@@ -3,6 +3,7 @@ Lobby = require('../lib/lobby.coffee')
 module.exports =
   sg: (msg) ->
 
+    console.log('debug------------------------------', msg.match)
     if @auth.hasRole(msg.envelope.user, 'officer')
 
       user = msg.message.user.id
@@ -45,6 +46,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
   cg: (msg) ->
+    console.log('debug------------------------------', msg.match)
     user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
@@ -59,7 +61,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   format: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
@@ -92,6 +94,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   map: (msg) ->
+    console.log('debug------------------------------', msg.match)
     user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
@@ -121,6 +124,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   server: (msg) ->
+    console.log('debug------------------------------', msg.match)
     user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
@@ -142,7 +146,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   change: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     if @auth.hasRole(msg.envelope.user, 'admin')
 
       switch msg.match[1].toLowerCase()

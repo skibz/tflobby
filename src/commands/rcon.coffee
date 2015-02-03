@@ -3,7 +3,7 @@ Rcon = require('../lib/rcon.coffee')
 module.exports =
 
   rconSay: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     if @auth.hasRole(msg.envelope.user, 'rcon')
 
       user = msg.message.user.id
@@ -23,7 +23,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
   rconRoster: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     if @auth.hasRole(msg.envelope.user, 'rcon')
 
       user = msg.message.user.id
@@ -44,7 +44,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
   rconMap: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     if @auth.hasRole(msg.envelope.user, 'rcon')
 
       server = @brain.get('tflobby.servers.all')[msg.match[2].toLowerCase()]

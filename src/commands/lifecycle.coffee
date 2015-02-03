@@ -1,12 +1,6 @@
 Rcon = require('../lib/rcon.coffee')
 Lobby = require('../lib/lobby.coffee')
 
-# authorise = (msg) ->
-#   user = msg.message.user.id
-#   targetingSelf = msg.match.length is 1 or msg.match[1] is 'me'
-#   target = if targetingSelf then user else msg.match[1].trim()
-#   permitted = targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
-
 finalising = (msg) ->
 
   return unless (lobby = @brain.get('tflobby.lobby'))?
@@ -92,9 +86,9 @@ module.exports =
     return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
   add: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     user = msg.message.user.id
-    targetingSelf = msg.match.length is 1
+    targetingSelf = msg.match[0] is '!add'
     target = if targetingSelf then user else msg.match[1].trim()
     permitted = targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
@@ -131,9 +125,9 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   rem: (msg) ->
-
+    console.log('debug------------------------------', msg.match)
     user = msg.message.user.id
-    targetingSelf = msg.match.length is 1
+    targetingSelf = msg.match[0] is '!rem'
     target = if targetingSelf then user else msg.match[1].trim()
 
     if targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))

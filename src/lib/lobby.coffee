@@ -4,7 +4,7 @@ class Lobby
   constructor: (@map, @principal, @server) ->
     @playersPerSide = 6
     @createdAt = (new Date()).toJSON()
-    @players = {}
+    @participants = {}
     @finalising = false
 
   ###*
@@ -19,14 +19,14 @@ class Lobby
    * @return {array}
   ###
   players: ->
-    return Object.keys(@players)
+    return Object.keys(@participants)
 
   ###*
    * return the number of participating players
    * @return {number}
   ###
   totalPlayers: ->
-    return Object.keys(@players).length
+    return Object.keys(@participants).length
 
   ###*
    * list a given player as participating
@@ -34,7 +34,7 @@ class Lobby
    * @return {object}      of type Lobby
   ###
   add: (name) ->
-    @players[name] = name
+    @participants[name] = name
     return @
 
   ###*
@@ -43,7 +43,7 @@ class Lobby
    * @return {object}      of type Lobby
   ###
   rem: (name) ->
-    delete @players[name]
+    delete @participants[name]
     return @
 
   ###*
@@ -52,7 +52,7 @@ class Lobby
    * @return {Boolean}        if player has added
   ###
   isAdded: (player) ->
-    return player in Object.keys(@players)
+    return player in Object.keys(@participants)
 
   ###*
    * change a given property to value
