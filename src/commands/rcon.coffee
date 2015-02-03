@@ -3,57 +3,58 @@ Rcon = require('../lib/rcon.coffee')
 module.exports =
 
   rconSay: (msg) ->
-    console.log('debug------------------------------')
-    console.dir(msg.match)
-    console.dir(msg.message)
-    console.dir(msg.envelope)
+
     if @auth.hasRole(msg.envelope.user, 'rcon')
 
       user = msg.message.user.id
       server = @brain.get('tflobby.servers.all')[msg.match[3].toLowerCase()]
 
-      if server?.rcon
+      if server?
 
-        return new Rcon server, (err, ctx) ->
+        if server.rcon?
 
-          return ctx.exec "sm_say [via IRC] #{user}: #{msg.match[2]}", (res) ->
+          return new Rcon server, (err, ctx) ->
 
-            ctx.close()
-            return msg.reply(":: your message was delivered...")
+            return msg.reply(':: a rcon error ocurred...') if err
+
+            return ctx.exec "sm_say [via IRC] #{user}: #{msg.match[2]}", (res) ->
+
+              ctx.close()
+              return msg.reply(":: your message was delivered...")
+
+        return msg.reply(":: an rcon password isn't set for that server...")
 
       return msg.reply("server `#{msg.match[3]}` doesn't exist...")
 
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
   rconRoster: (msg) ->
-    console.log('debug------------------------------')
-    console.dir(msg.match)
-    console.dir(msg.message)
-    console.dir(msg.envelope)
+
     if @auth.hasRole(msg.envelope.user, 'rcon')
 
-      user = msg.message.user.id
-      previous = @brain.get('tflobby.previous')
-      # server = @brain.get('tflobby.servers.all')[previous.server.name]
+      lobby = @brain.get('tflobby.previous')
 
-      if previous.server.rcon?
+      if lobby?
 
-        return new Rcon previous.server, (err, ctx) ->
+        if lobby.server.rcon?
 
-          return ctx.exec "sm_say [ #tfbot ] #{previous.players().join(', ')}", (res) ->
+          return new Rcon lobby.server, (err, ctx) ->
 
-            ctx.close()
-            return msg.reply(":: player roster sent to `#{server.name}`...")
+            return msg.reply(':: a rcon error ocurred...') if err
 
-      return msg.reply("#{msg.random(@brain.get('tflobby.chat.affirmative'))} there's no previous game data. creepy...")
+            return ctx.exec "sm_say [ #tfbot ] #{lobby.players().join(', ')}", (res) ->
+
+              ctx.close()
+              return msg.reply(":: player roster sent to `#{server.name}`...")
+
+        return msg.reply(":: an rcon password isn't set for that server...")
+
+      return msg.reply("#{msg.random(@brain.get('tflobby.chat.affirmative'))} there's no game data. creepy...")
 
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
   rconMap: (msg) ->
-    console.log('debug------------------------------')
-    console.dir(msg.match)
-    console.dir(msg.message)
-    console.dir(msg.envelope)
+
     if @auth.hasRole(msg.envelope.user, 'rcon')
 
       server = @brain.get('tflobby.servers.all')[msg.match[2].toLowerCase()]
@@ -62,14 +63,15 @@ module.exports =
 
         if server.rcon?
 
-          user = msg.message.user.id
           map = msg.match[3].toLowerCase()
-          allMaps = @brain.get('tflobby.maps.all')
-          filtered = allMaps.filter (map) -> map.indexOf(msg.match[2]) isnt -1
+          filtered = @brain.get('tflobby.maps.all').filter (map) ->
+            map.indexOf(msg.match[2]) isnt -1
 
           if filtered.length is 1
 
             return new Rcon server, (err, ctx) ->
+
+              return msg.reply(':: a rcon error ocurred...') if err
 
               return ctx.exec "changelevel #{filtered[0]}", (res) ->
 
