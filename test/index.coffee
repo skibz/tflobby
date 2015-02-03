@@ -124,7 +124,7 @@ describe 'tfbot', ->
 
       it 'should register respond listeners', ->
 
-        expect(@robot.respond).to.have.been.calledWith(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect(@robot.respond).to.have.been.calledWith(/sg|new/i)
         expect(@robot.respond).to.have.been.calledWith(/cg|kill/i)
         expect(@robot.respond).to.have.been.calledWith(/format (.*)/i)
         expect(@robot.respond).to.have.been.calledWith(/(random (.*) map)|(map (.*))/i)
@@ -137,12 +137,8 @@ describe 'tfbot', ->
 
         it 'should match with input strings', ->
 
-          expect('sg').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-          expect('new').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-          expect('sg abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-          expect('new abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-          expect('sg random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-          expect('new random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('sg').to.match(/sg|new/i)
+          expect('new').to.match(/sg|new/i)
 
       describe '!cg', ->
 

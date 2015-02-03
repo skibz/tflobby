@@ -1,9 +1,9 @@
 Lobby = require('../lib/lobby.coffee')
 
 module.exports =
+
   sg: (msg) ->
 
-    console.log('debug------------------------------', msg.match)
     if @auth.hasRole(msg.envelope.user, 'officer')
 
       user = msg.message.user.id
@@ -13,32 +13,10 @@ module.exports =
 
       randomPopular = msg.random(@brain.get('tflobby.maps.popular'))
       defaultServer = @brain.get('tflobby.servers.all')[@brain.get('tflobby.servers.default')]
-      randomMapOfMode = msg.match[0].indexOf('random') isnt -1
 
       msg.send(":: starting a new pickup...")
 
-      created = switch true
-        when msg.match.length is 2 and not randomMapOfMode
-          filtered = @brain.get('tflobby.maps.all').filter (map) ->
-            map.indexOf(msg.match[2]) isnt -1
-          new Lobby(
-            if filtered.length is 1 then filtered[0] else randomPopular,
-            user,
-            defaultServer
-          )
-        when msg.match.length is 2 and msg.match[1].toLowerCase() in ['cp', 'ctf', 'koth'] and randomMapOfMode
-          new Lobby(
-            msg.random(@brain.get("tflobby.maps.#{msg.match[1].toLowerCase()}")),
-            user,
-            defaultServer
-          )
-        else
-          new Lobby(
-            randomPopular,
-            user,
-            defaultServer
-          )
-
+      created = new Lobby(randomPopular, user, defaultServer)
       @brain.set('tflobby.lobby', created)
 
       return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.slots()} : [  ] ::")
@@ -46,8 +24,6 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't to do that...")
 
   cg: (msg) ->
-    console.log('debug------------------------------', msg.match)
-    user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
 
@@ -61,50 +37,37 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   format: (msg) ->
-    console.log('debug------------------------------', msg.match)
-    user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
 
       unless (lobby = @brain.get('tflobby.lobby'))?
         return msg.reply(":: no pickup filling - create one with !sg or !add")
 
-      if msg.match[1].indexOf('.') is -1 and msg.match[1].indexOf(',') is -1
+      format = parseInt(msg.match[1], 10)
 
-        try
+      if format > 0
 
-          format = parseInt(msg.match[1], 10)
+        if format < 13
 
-          if format > 0
+          @brain.set('tflobby.lobby', lobby.set('playersPerSide', format))
+          return msg.reply(":: players per side set to `#{format}`...")
 
-            if format < 13
+        return msg.reply(":: pickups can have up to twelve players per side...")
 
-              @brain.set('tflobby.lobby', lobby.set('playersPerSide', format))
-              return msg.reply(":: players per side set to `#{format}`...")
-
-            return msg.reply(":: pickups can have up to twelve players per side...")
-
-          return msg.reply(":: pickups need at least one player per side...")
-
-        catch e
-          return msg.reply(":: this command only accepts integer values...")
-
-      return msg.reply(":: this command only accepts integer values...")
+      return msg.reply(":: pickups need at least one player per side...")
 
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   map: (msg) ->
-    console.log('debug------------------------------', msg.match)
-    user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
 
       unless (lobby = @brain.get('tflobby.lobby'))?
         return msg.reply(":: no pickup filling - create one with !sg or !add")
 
-      if msg.match[0].indexOf('random') isnt -1
+      if msg.match[1] and msg.match[1].indexOf('random') isnt -1
 
-        type = msg.match[1].toLowerCase()
+        type = msg.match[2].toLowerCase()
 
         if type in ['cp', 'ctf', 'koth']
           random = msg.random(@brain.get("tflobby.maps.#{type}"))
@@ -113,7 +76,7 @@ module.exports =
 
         return msg.reply(":: invalid map type `#{type}`...")
 
-      filtered = maps.filter (map) -> map.indexOf(msg.match[1]) isnt -1
+      filtered = @brain.get('tflobby.maps.all').filter (map) -> map.indexOf(msg.match[4]) isnt -1
 
       if filtered.length is 1
         @brain.set('tflobby.lobby', lobby.set('map', filtered[0]))
@@ -124,8 +87,6 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   server: (msg) ->
-    console.log('debug------------------------------', msg.match)
-    user = msg.message.user.id
 
     if @auth.hasRole(msg.envelope.user, 'officer')
 
@@ -135,7 +96,7 @@ module.exports =
       server = msg.match[1].toLowerCase()
 
       if server in @brain.get('tflobby.servers.names')
-        robot.brain.set(
+        @brain.set(
           'tflobby.lobby',
           lobby.set('server', @brain.get('tflobby.servers.all')[server])
         )
@@ -146,7 +107,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   change: (msg) ->
-    console.log('debug------------------------------', msg.match)
+
     if @auth.hasRole(msg.envelope.user, 'admin')
 
       switch msg.match[1].toLowerCase()

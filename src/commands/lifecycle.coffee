@@ -86,7 +86,11 @@ module.exports =
     return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
   add: (msg) ->
-    console.log('debug------------------------------', msg.match)
+    console.log('debug------------------------------')
+    console.dir(msg.match)
+    console.dir(msg.message)
+    console.dir(msg.envelope)
+
     user = msg.message.user.id
     targetingSelf = msg.match[0] is '!add'
     target = if targetingSelf then user else msg.match[1].trim()
@@ -125,7 +129,10 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   rem: (msg) ->
-    console.log('debug------------------------------', msg.match)
+    console.log('debug------------------------------')
+    console.dir(msg.match)
+    console.dir(msg.message)
+    console.dir(msg.envelope)
     user = msg.message.user.id
     targetingSelf = msg.match[0] is '!rem'
     target = if targetingSelf then user else msg.match[1].trim()

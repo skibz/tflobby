@@ -3,6 +3,8 @@ Path = require 'path'
 
 module.exports = (robot) ->
 
+  robot.brain.autoSave = true
+
   # chat.flava
   robot.brain.set(
     'tflobby.chat.flava',
