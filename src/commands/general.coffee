@@ -31,7 +31,7 @@ module.exports =
   previous: (msg) ->
 
     unless (previous = @brain.get('tflobby.previous'))?
-      return msg.reply(":: no previous match data...")
+      return msg.reply(':: no previous match data...')
 
     return msg.send(":: started by #{previous.principal} : #{previous.server.name} : #{previous.map} : [ #{previous.players().join(', ')} ] : #{new Date(previous.createdAt).toString()} ::")
 

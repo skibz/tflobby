@@ -1,15 +1,13 @@
-srcon = require('simple-rcon')
+SimpleRcon = require('simple-rcon')
 
 class Rcon
 
-  constructor: (server, fn) ->
+  constructor: (@server, fn) ->
 
-    return unless server?
+    return unless @server?
 
-    ctx = new srcon(server.host, server.port, server.rcon)
+    ctx = new SimpleRcon(@server.host, @server.port, @server.rcon)
 
-    ctx
-      .on 'error', (err) -> return fn(err, null)
-      .on 'authenticated', -> return fn(null, ctx)
+    return ctx.on 'authenticated', -> return fn(ctx)
 
 module.exports = Rcon

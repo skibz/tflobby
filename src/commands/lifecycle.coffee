@@ -15,17 +15,13 @@ finalising = (msg) ->
     @brain.set('tflobby.lobby', lobby.set('finalising', false))
     return msg.send(":: not enough players to begin: #{totalPlayers}/#{format}...")
 
-  return new Rcon server, (err, ctx) ->
+  return new Rcon server, (ctx) ->
 
-    if err
-      @brain.set('tflobby.errors.rcon', err)
-      msg.send(":: unable to contact the game server due to a rcon error...")
-    else
-      ctx.exec('sm_say [ #tfbot ] :: COMING UP ::')
-      ctx.exec("sm_say [ #tfbot ] :: #{lobby.map} ::")
-      ctx.exec("sm_say [ #tfbot ] :: #{playerNames} ::")
-      ctx.exec('sm_say [ #tfbot ] :: irc.shadowfire.org ::')
-      ctx.close()
+    ctx.exec('sm_say [ #tfbot ] :: COMING UP ::')
+    ctx.exec("sm_say [ #tfbot ] :: #{lobby.map} ::")
+    ctx.exec("sm_say [ #tfbot ] :: #{playerNames} ::")
+    ctx.exec('sm_say [ #tfbot ] :: irc.shadowfire.org ::')
+    ctx.close()
 
     msg.send(":: #{playerNames}")
     msg.send(":: steam://connect/#{server.host}:#{server.port}/#{server.password}")
