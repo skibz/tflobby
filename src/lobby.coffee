@@ -1,6 +1,5 @@
 class Lobby
 
-  # constructor: (@map, @principal, @server) ->
   constructor: (@map, @principal, @server) ->
     @playersPerSide = 6
     @createdAt = (new Date()).toJSON()
@@ -59,7 +58,7 @@ class Lobby
    * @return {Boolean}
   ###
   isFull: ->
-    return Object.keys(@participants) is @playersPerSide * 2
+    return Object.keys(@participants).length is @playersPerSide * 2
 
   ###*
    * change a given property to value

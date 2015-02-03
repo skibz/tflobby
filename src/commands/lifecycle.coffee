@@ -5,8 +5,9 @@ finalising = (msg) ->
 
   return unless (lobby = @brain.get('tflobby.lobby'))?
 
-  server = @brain.get('tflobby.servers.all')[lobby.server.name]
-  playerNames = lobby.players().join(', ')
+  server = lobby.server
+  players = lobby.players()
+  playerNames = players.join(', ')
   totalPlayers = lobby.totalPlayers()
   format = lobby.slots()
 
@@ -15,7 +16,7 @@ finalising = (msg) ->
     @brain.set('tflobby.lobby', lobby.set('finalising', false))
     return msg.send(":: not enough players to begin: #{totalPlayers}/#{format}...")
 
-  return new Rcon server, (ctx) ->
+  return new Rcon server, ((ctx) ->
 
     ctx.exec('sm_say [ #tfbot ] :: COMING UP ::')
     ctx.exec("sm_say [ #tfbot ] :: #{lobby.map} ::")
@@ -24,8 +25,9 @@ finalising = (msg) ->
     ctx.close()
 
     msg.send(":: #{playerNames}")
+    msg.send(":: pickup is starting on #{server.name}...")
     msg.send(":: steam://connect/#{server.host}:#{server.port}/#{server.password}")
-    msg.send(":: starting a new pickup...")
+    msg.send(':: creating a new pickup...')
 
     today = @brain.get('tflobby.today') ? { players: {}, maps: {} }
 
@@ -51,6 +53,7 @@ finalising = (msg) ->
     @brain.set('tflobby.previous', lobby)
 
     return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.slots()} : [  ] ::")
+  ).bind(@)
 
 module.exports =
 
@@ -90,9 +93,8 @@ module.exports =
     user = msg.message.user.id
     targetingSelf = msg.match[0] is '!add'
     target = if targetingSelf then user else msg.match[1].trim()
-    permitted = targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
-    if permitted
+    if targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
       lobby = @brain.get('tflobby.lobby')
 
@@ -107,15 +109,16 @@ module.exports =
       unless lobby.isFull()
 
         unless lobby.isAdded(target)
+
           @brain.set('tflobby.lobby', lobby.add(target))
           msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
-          return unless lobby.isFull() and not lobby.finalising
+          if lobby.isFull() and not lobby.finalising
+            @brain.set('tflobby.lobby', lobby.set('finalising', true))
+            msg.send(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} pickup full! stick around for just a moment...")
+            return setTimeout(finalising.bind(@, msg), 60000)
 
-          return @brain.set(
-            'tflobby.lobby.timer',
-            setTimeout(finalising.bind(@, msg), 60000)
-          )
+          return
 
         return msg.reply(":: #{msg.random(@brain.get('tflobby.chat.affirmative'))} #{if targetingSelf then 'you are' else target + ' is'} already added...")
 

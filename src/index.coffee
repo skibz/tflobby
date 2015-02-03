@@ -15,7 +15,7 @@
 #   hubot rcon [say|message|msg] <message> to <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
 #   hubot rcon send [list|the list|roster|players] to <server> - sends the player roster from the previous lobby to <server>. limited to `rcon` roles.
 #   hubot rcon [change map|changelevel|map] on <server> to <mapname> - changes the map on <server> to <mapname>. limited to `rcon` roles.
-#   hubot [[sg|new]|[[sg|new] <mapname>]|[sg|new] random <gamemode> map] - creates a new lobby with the map set to <mapname>. limited to `officer` roles.
+#   hubot [sg|new] - creates a new lobby. limited to `officer` roles.
 #   hubot [cg|kill] - cancels a running lobby. limited to `officer` roles.
 #   hubot format <nPlayers> - changes the number of players per side to nPlayers.
 #   hubot [add|add <me|user>] - adds <user> to the lobby. addition of other users is limited to `officer` roles.
