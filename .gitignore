@@ -5,4 +5,3 @@ node_modules
 
 # secrets lie within
 .bowery
-exec.sh
