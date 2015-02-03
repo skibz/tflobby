@@ -8,6 +8,8 @@
     "postinstall": "chmod u+x scripts/test"
   },
   "keywords": [
+    "hubot",
+    "hubot-irc",
     "pickup",
     "esports",
     "e-sports",
