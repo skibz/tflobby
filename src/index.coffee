@@ -5,9 +5,11 @@
 #   simple-rcon
 #
 # Configuration:
-#   TFLOBBY_MAPS - a comma separated list of map names.
-#   TFLOBBY_POPULAR_MAPS - a comma separated list of the most played maps
-#   TFLOBBY_GAME_SERVERS - array of json objects keyed by server data, eg. port, password, host, etc...
+#   HUBOT_AUTH_ADMIN - a comma-separated list of nicknames to set as super-admins
+#   TFLOBBY_MAPS - a comma-separated list of map names
+#   TFLOBBY_POPULAR_MAPS - a comma-separated list of popular maps
+#   TFLOBBY_GAME_SERVERS - objects containing server data keyed by server name in escaped json
+#   TFLOBBY_DEFAULT_SERVER - name of default server corresponding to an entry in TFLOBBY_GAME_SERVERS
 #
 # Commands:
 #   hubot rcon [say|message|msg] <message> on <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
