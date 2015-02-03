@@ -28,7 +28,7 @@
 #   hubot change <property> to <value> - changes a tflobby bot setting
 #
 # Author:
-#   skibz
+#   skibz <ant@io.co.za>
 
 { lifecycle, general, rcon, admin } = require('../src/commands/index.coffee')
 
