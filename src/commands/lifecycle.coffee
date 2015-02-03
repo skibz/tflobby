@@ -13,12 +13,17 @@ finalising = (msg) ->
     @brain.set('tflobby.lobby', lobby.set('finalising', false))
     return msg.send(":: not enough players to begin: #{players.length}/#{format}...")
 
-  return new Rcon server, (ctx) ->
-    ctx.exec('sm_say [ #tfbot ] :: COMING UP ::')
-    ctx.exec("sm_say [ #tfbot ] :: #{lobby.map} ::")
-    ctx.exec("sm_say [ #tfbot ] :: #{players.join(', ')} ::")
-    ctx.exec('sm_say [ #tfbot ] :: irc.shadowfire.org ::')
-    ctx.close()
+  return new Rcon server, (err, ctx) ->
+
+    if err
+      @brain.set('tflobby.errors.rcon', err)
+      msg.send(":: unable to contact the game server due to a rcon error...")
+    else
+      ctx.exec('sm_say [ #tfbot ] :: COMING UP ::')
+      ctx.exec("sm_say [ #tfbot ] :: #{lobby.map} ::")
+      ctx.exec("sm_say [ #tfbot ] :: #{players.join(', ')} ::")
+      ctx.exec('sm_say [ #tfbot ] :: irc.shadowfire.org ::')
+      ctx.close()
 
     players = lobby.players()
     today = @brain.get('tflobby.today') ? { players: {}, maps: {} }
@@ -86,10 +91,6 @@ module.exports =
     return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
   add: (msg) ->
-    console.log('debug------------------------------')
-    console.dir(msg.match)
-    console.dir(msg.message)
-    console.dir(msg.envelope)
 
     user = msg.message.user.id
     targetingSelf = msg.match[0] is '!add'
@@ -129,10 +130,7 @@ module.exports =
     return msg.reply("#{msg.random(@brain.get('tflobby.chat.mistake'))} you can't do that...")
 
   rem: (msg) ->
-    console.log('debug------------------------------')
-    console.dir(msg.match)
-    console.dir(msg.message)
-    console.dir(msg.envelope)
+
     user = msg.message.user.id
     targetingSelf = msg.match[0] is '!rem'
     target = if targetingSelf then user else msg.match[1].trim()
@@ -147,7 +145,7 @@ module.exports =
 
       if lobby.isAdded(target)
         @brain.set('tflobby.lobby', lobby.rem(target))
-        return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : #{lobby.players().join(', ')} ::")
+        return msg.send(":: #{lobby.server.name} : #{lobby.map} : #{lobby.totalPlayers()}/#{lobby.slots()} : [ #{lobby.players().join(', ')} ] ::")
 
       return msg.reply(":: #{if targetingSelf then 'you\'re not' else target + '\'s not'} added to the pickup...")
 

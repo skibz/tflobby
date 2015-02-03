@@ -30,7 +30,7 @@
 # Author:
 #   skibz
 
-{ lifecycle, community, rcon, admin } = require('../src/commands/index.coffee')
+{ lifecycle, general, rcon, admin } = require('../src/commands/index.coffee')
 
 module.exports = (robot) ->
 
@@ -40,9 +40,9 @@ module.exports = (robot) ->
   robot.respond /add (.*)$|add$/i, (msg) -> lifecycle.add.call(robot, msg)
   robot.respond /rem (.*)$|rem$/i, (msg) -> lifecycle.rem.call(robot, msg)
 
-  robot.respond /status$|games$/i, (msg) -> community.status.call(robot, msg)
-  robot.respond /previous$|lastgame$/i, (msg) -> community.previous.call(robot, msg)
-  robot.respond /(top|today) (maps|players)$/i, (msg) -> community.top.call(robot, msg)
+  robot.respond /status$|games$/i, (msg) -> general.status.call(robot, msg)
+  robot.respond /previous$|lastgame$/i, (msg) -> general.previous.call(robot, msg)
+  robot.respond /(top|today) (.*)$/i, (msg) -> general.top.call(robot, msg)
 
   robot.respond /rcon (say|message|msg) (.*) to (.*)$/i, (msg) -> rcon.rconSay.call(robot, msg)
   robot.respond /rcon send (list|the list|roster|players) to (.*)$/i, (msg) -> rcon.rconRoster.call(robot, msg)
