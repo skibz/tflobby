@@ -129,9 +129,8 @@ module.exports =
 
   rem: (msg) ->
 
-    user = msg.message.user.id
     targetingSelf = msg.match[0] is '!rem'
-    target = if targetingSelf then user else msg.match[1].trim()
+    target = if targetingSelf then msg.message.user.id else msg.match[1].trim()
 
     if targetingSelf or (not targetingSelf and @auth.hasRole(msg.envelope.user, 'officer'))
 
