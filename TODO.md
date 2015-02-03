@@ -13,5 +13,5 @@
 - [x] change the names of lobby functions for clarity
 - [x] attend to the commented changes in Lobby.coffee
 - [x] add a test suite
-- [ ] improve the test suite
+- [ ] add test cases for lobby and rcon classes
 - [ ] add arena maps to index.coffee/maps variable

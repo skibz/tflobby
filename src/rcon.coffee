@@ -9,7 +9,7 @@ class Rcon
     ctx = new srcon(server.host, server.port, server.rcon)
 
     ctx
-      .on 'error', (err) -> console.error('rcon error', err)
-      .on 'authenticated', -> return fn(ctx)
+      .on 'error', (err) -> return fn(err, null)
+      .on 'authenticated', -> return fn(null, ctx)
 
 module.exports = Rcon

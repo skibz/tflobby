@@ -14,148 +14,164 @@ describe 'tfbot', ->
 
     require('../src/index.coffee')(@robot)
 
-  describe 'lifecycle commands', ->
+  describe 'lifecycle module', ->
 
-    it 'should register enter/leave listeners', ->
+    describe 'listeners', ->
 
-      expect(@robot.enter).to.have.been.called
-      expect(@robot.leave).to.have.been.called
+      it 'should register enter/leave listeners', ->
 
-    it 'should register respond listeners', ->
+        expect(@robot.enter).to.have.been.called
+        expect(@robot.leave).to.have.been.called
 
-      expect(@robot.respond).to.have.been.calledWith(/add (me|.*)|add/i)
-      expect(@robot.respond).to.have.been.calledWith(/rem (me|.*)|rem/i)
+      it 'should register respond listeners', ->
 
-    describe '!add', ->
+        expect(@robot.respond).to.have.been.calledWith(/add (me|.*)|add/i)
+        expect(@robot.respond).to.have.been.calledWith(/rem (me|.*)|rem/i)
 
-      it 'should match with input strings', ->
+    describe 'commands', ->
 
-        expect('add').to.match(/add (me|.*)|add/i)
-        expect('add me').to.match(/add (me|.*)|add/i)
-        expect('add abc').to.match(/add (me|.*)|add/i)
+      describe '!add', ->
 
-    describe '!rem', ->
+        it 'should match with input strings', ->
 
-      it 'should match with input strings', ->
+          expect('add').to.match(/add (me|.*)|add/i)
+          expect('add me').to.match(/add (me|.*)|add/i)
+          expect('add abc').to.match(/add (me|.*)|add/i)
 
-        expect('rem').to.match(/rem (me|.*)|rem/i)
-        expect('rem me').to.match(/rem (me|.*)|rem/i)
-        expect('rem abc').to.match(/rem (me|.*)|rem/i)
+      describe '!rem', ->
 
-  describe 'community commands', ->
+        it 'should match with input strings', ->
 
-    it 'should register respond listeners', ->
+          expect('rem').to.match(/rem (me|.*)|rem/i)
+          expect('rem me').to.match(/rem (me|.*)|rem/i)
+          expect('rem abc').to.match(/rem (me|.*)|rem/i)
 
-      expect(@robot.respond).to.have.been.calledWith(/status|games/i)
-      expect(@robot.respond).to.have.been.calledWith(/previous|lastgame/i)
-      expect(@robot.respond).to.have.been.calledWith(/(top|today) (maps|players)/i)
+  describe 'community module', ->
 
-    describe '!status', ->
+    describe 'listeners', ->
 
-      it 'should match with input strings', ->
+      it 'should register respond listeners', ->
 
-        expect('status').to.match(/status|games/i)
-        expect('games').to.match(/status|games/i)
+        expect(@robot.respond).to.have.been.calledWith(/status|games/i)
+        expect(@robot.respond).to.have.been.calledWith(/previous|lastgame/i)
+        expect(@robot.respond).to.have.been.calledWith(/(top|today) (maps|players)/i)
 
-    describe '!previous', ->
+    describe 'commands', ->
 
-      it 'should match with input strings', ->
+      describe '!status', ->
 
-        expect('previous').to.match(/previous|lastgame/i)
-        expect('lastgame').to.match(/previous|lastgame/i)
+        it 'should match with input strings', ->
 
-    describe '!top', ->
+          expect('status').to.match(/status|games/i)
+          expect('games').to.match(/status|games/i)
 
-      it 'should match with input strings', ->
+      describe '!previous', ->
 
-        expect('top maps').to.match(/(top|today) (maps|players)/i)
-        expect('top players').to.match(/(top|today) (maps|players)/i)
-        expect('today maps').to.match(/(top|today) (maps|players)/i)
-        expect('today players').to.match(/(top|today) (maps|players)/i)
+        it 'should match with input strings', ->
 
-  describe 'rcon commands', ->
+          expect('previous').to.match(/previous|lastgame/i)
+          expect('lastgame').to.match(/previous|lastgame/i)
 
-    it 'should register respond listeners', ->
+      describe '!top', ->
 
-      expect(@robot.respond).to.have.been.calledWith(/rcon (say|message|msg) (.*) to (.*)/i)
-      expect(@robot.respond).to.have.been.calledWith(/rcon send (list|the list|roster|players) to (.*)/i)
-      expect(@robot.respond).to.have.been.calledWith(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
+        it 'should match with input strings', ->
 
-    describe '!rcon say', ->
+          expect('top maps').to.match(/(top|today) (maps|players)/i)
+          expect('top players').to.match(/(top|today) (maps|players)/i)
+          expect('today maps').to.match(/(top|today) (maps|players)/i)
+          expect('today players').to.match(/(top|today) (maps|players)/i)
 
-      it 'should match with input strings', ->
+  describe 'rcon module', ->
 
-        expect('rcon say abc to abc').to.match(/rcon (say|message|msg) (.*) to (.*)/i)
-        expect('rcon message abc to abc').to.match(/rcon (say|message|msg) (.*) to (.*)/i)
-        expect('rcon msg abc to abc').to.match(/rcon (say|message|msg) (.*) to (.*)/i)
+    describe 'listeners', ->
 
-    describe '!rcon send', ->
+      it 'should register respond listeners', ->
 
-      it 'should match with input strings', ->
+        expect(@robot.respond).to.have.been.calledWith(/rcon (say|message|msg) (.*) to (.*)/i)
+        expect(@robot.respond).to.have.been.calledWith(/rcon send (list|the list|roster|players) to (.*)/i)
+        expect(@robot.respond).to.have.been.calledWith(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
 
-        expect('rcon send list to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
-        expect('rcon send the list to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
-        expect('rcon send roster to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
-        expect('rcon send players to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
+    describe 'commands', ->
 
-    describe '!rcon map', ->
+      describe '!rcon say', ->
 
-      it 'should match with input strings', ->
+        it 'should match with input strings', ->
 
-        expect('rcon change map on abc to abc').to.match(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
-        expect('rcon changelevel on abc to abc').to.match(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
-        expect('rcon map on abc to abc').to.match(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
+          expect('rcon say abc to abc').to.match(/rcon (say|message|msg) (.*) to (.*)/i)
+          expect('rcon message abc to abc').to.match(/rcon (say|message|msg) (.*) to (.*)/i)
+          expect('rcon msg abc to abc').to.match(/rcon (say|message|msg) (.*) to (.*)/i)
 
-  describe 'admin commands', ->
+      describe '!rcon send', ->
 
-    it 'should register respond listeners', ->
+        it 'should match with input strings', ->
 
-      expect(@robot.respond).to.have.been.calledWith(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-      expect(@robot.respond).to.have.been.calledWith(/cg|kill/i)
-      expect(@robot.respond).to.have.been.calledWith(/format (.*)/i)
-      expect(@robot.respond).to.have.been.calledWith(/(random (.*) map)|(map (.*))/i)
-      expect(@robot.respond).to.have.been.calledWith(/server (.*)/i)
-      expect(@robot.respond).to.have.been.calledWith(/change (.*) to (.*)/i)
+          expect('rcon send list to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
+          expect('rcon send the list to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
+          expect('rcon send roster to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
+          expect('rcon send players to abc').to.match(/rcon send (list|the list|roster|players) to (.*)/i)
 
-    describe '!sg', ->
+      describe '!rcon map', ->
 
-      it 'should match with input strings', ->
+        it 'should match with input strings', ->
 
-        expect('sg').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-        expect('new').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-        expect('sg abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-        expect('new abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-        expect('sg random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
-        expect('new random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('rcon change map on abc to abc').to.match(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
+          expect('rcon changelevel on abc to abc').to.match(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
+          expect('rcon map on abc to abc').to.match(/rcon (change map|changelevel|map) on (.*) to (.*)/i)
 
-    describe '!cg', ->
+  describe 'admin module', ->
 
-      it 'should match with input strings', ->
+    describe 'listeners', ->
 
-        expect('cg').to.match(/cg|kill/i)
-        expect('kill').to.match(/cg|kill/i)
+      it 'should register respond listeners', ->
 
-    describe '!format', ->
+        expect(@robot.respond).to.have.been.calledWith(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+        expect(@robot.respond).to.have.been.calledWith(/cg|kill/i)
+        expect(@robot.respond).to.have.been.calledWith(/format (.*)/i)
+        expect(@robot.respond).to.have.been.calledWith(/(random (.*) map)|(map (.*))/i)
+        expect(@robot.respond).to.have.been.calledWith(/server (.*)/i)
+        expect(@robot.respond).to.have.been.calledWith(/change (.*) to (.*)/i)
 
-      it 'should match with input strings', ->
+    describe 'commands', ->
 
-        expect('format 5').to.match(/format (.*)/i)
+      describe '!sg', ->
 
-    describe '!map', ->
+        it 'should match with input strings', ->
 
-      it 'should match with input strings', ->
+          expect('sg').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('new').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('sg abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('new abc').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('sg random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
+          expect('new random abc map').to.match(/((sg|new))|((sg|new) (.*))|((sg|new) random (.*) map)/i)
 
-        expect('random abc map').to.match(/(random (.*) map)|(map (.*))/i)
-        expect('map abc').to.match(/(random (.*) map)|(map (.*))/i)
+      describe '!cg', ->
 
-    describe '!server', ->
+        it 'should match with input strings', ->
 
-      it 'should match with input strings', ->
+          expect('cg').to.match(/cg|kill/i)
+          expect('kill').to.match(/cg|kill/i)
 
-        expect('server abc').to.match(/server (.*)/i)
+      describe '!format', ->
 
-    describe '!change', ->
+        it 'should match with input strings', ->
 
-      it 'should match with input strings', ->
+          expect('format 5').to.match(/format (.*)/i)
 
-        expect('change abc to abc').to.match(/change (.*) to (.*)/i)
+      describe '!map', ->
+
+        it 'should match with input strings', ->
+
+          expect('random abc map').to.match(/(random (.*) map)|(map (.*))/i)
+          expect('map abc').to.match(/(random (.*) map)|(map (.*))/i)
+
+      describe '!server', ->
+
+        it 'should match with input strings', ->
+
+          expect('server abc').to.match(/server (.*)/i)
+
+      describe '!change', ->
+
+        it 'should match with input strings', ->
+
+          expect('change abc to abc').to.match(/change (.*) to (.*)/i)

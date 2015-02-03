@@ -97,7 +97,7 @@ module.exports = (robot) ->
   robot.brain.set('tflobby.servers.names', Object.keys(servers))
   robot.brain.set('tflobby.servers.default', defaultServer)
 
-  path = Path.resolve(__dirname, 'scripts')
+  path = Path.resolve(__dirname, 'src')
 
   fs.exists path, (exists) ->
     if not exists

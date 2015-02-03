@@ -11,7 +11,7 @@ module.exports =
 
       if server?.rcon
 
-        return new Rcon server, (ctx) ->
+        return new Rcon server, (err, ctx) ->
 
           return ctx.exec "sm_say [via IRC] #{user}: #{msg.match[2]}", (res) ->
 
@@ -32,7 +32,7 @@ module.exports =
 
       if previous.server.rcon?
 
-        return new Rcon previous.server, (ctx) ->
+        return new Rcon previous.server, (err, ctx) ->
 
           return ctx.exec "sm_say [ #tfbot ] #{previous.players().join(', ')}", (res) ->
 
@@ -60,7 +60,7 @@ module.exports =
 
           if filtered.length is 1
 
-            return new Rcon server, (ctx) ->
+            return new Rcon server, (err, ctx) ->
 
               return ctx.exec "changelevel #{filtered[0]}", (res) ->
 
