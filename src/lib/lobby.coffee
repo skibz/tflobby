@@ -55,6 +55,13 @@ class Lobby
     return player in Object.keys(@participants)
 
   ###*
+   * whether the lobby doesn't have empty slots
+   * @return {Boolean}
+  ###
+  isFull: ->
+    return Object.keys(@participants) is @playersPerSide * 2
+
+  ###*
    * change a given property to value
    * @param {string} property name of property
    * @param {mixed}  value    value of property

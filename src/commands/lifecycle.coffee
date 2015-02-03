@@ -6,12 +6,14 @@ finalising = (msg) ->
   return unless (lobby = @brain.get('tflobby.lobby'))?
 
   server = @brain.get('tflobby.servers.all')[lobby.server.name]
+  playerNames = lobby.players().join(', ')
+  totalPlayers = lobby.totalPlayers()
   format = lobby.slots()
 
-  if lobby.totalPlayers() isnt format
+  unless lobby.isFull()
 
     @brain.set('tflobby.lobby', lobby.set('finalising', false))
-    return msg.send(":: not enough players to begin: #{players.length}/#{format}...")
+    return msg.send(":: not enough players to begin: #{totalPlayers}/#{format}...")
 
   return new Rcon server, (err, ctx) ->
 
@@ -21,17 +23,15 @@ finalising = (msg) ->
     else
       ctx.exec('sm_say [ #tfbot ] :: COMING UP ::')
       ctx.exec("sm_say [ #tfbot ] :: #{lobby.map} ::")
-      ctx.exec("sm_say [ #tfbot ] :: #{players.join(', ')} ::")
+      ctx.exec("sm_say [ #tfbot ] :: #{playerNames} ::")
       ctx.exec('sm_say [ #tfbot ] :: irc.shadowfire.org ::')
       ctx.close()
 
-    players = lobby.players()
-    today = @brain.get('tflobby.today') ? { players: {}, maps: {} }
+    msg.send(":: #{playerNames}")
+    msg.send(":: steam://connect/#{server.host}:#{server.port}/#{server.password}")
+    msg.send(":: starting a new pickup...")
 
-    if today.maps.hasOwnProperty(lobby.map)
-      today.maps[lobby.map]++
-    else
-      today.maps[lobby.map] = 1
+    today = @brain.get('tflobby.today') ? { players: {}, maps: {} }
 
     for player in players
       if today.players.hasOwnProperty(player)
@@ -39,22 +39,21 @@ finalising = (msg) ->
       else
         today.players[player] = 1
 
-    @brain.set('tflobby.today', today)
-    @brain.set('tflobby.previous', lobby)
-
-    msg.send(":: paging doctors #{players.join(', ')}")
-    msg.send(":: steam://connect/#{server.host}:#{server.port}/#{server.password}")
-    msg.send(":: no guarantee can be made that your place will still be available if you're late.")
-    msg.send(":: pro tip: don\'t be late.")
-    msg.send(":: starting a new pickup...")
+    if today.maps.hasOwnProperty(lobby.map)
+      today.maps[lobby.map]++
+    else
+      today.maps[lobby.map] = 1
 
     created = new Lobby(
       msg.random(@brain.get('tflobby.maps.popular')),
       'tfbot',
-      @brain.get('tflobby.servers')[@brain.get('tflobby.servers.default')]
+      @brain.get('tflobby.servers.all')[@brain.get('tflobby.servers.default')]
     )
 
     @brain.set('tflobby.lobby', created)
+    @brain.set('tflobby.today', today)
+    @brain.set('tflobby.previous', lobby)
+
     return msg.send(":: #{created.server.name} : #{created.map} : 0/#{created.slots()} : [  ] ::")
 
 module.exports =
