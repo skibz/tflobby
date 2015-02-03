@@ -12,8 +12,8 @@
 #   TFLOBBY_DEFAULT_SERVER - name of default server corresponding to an entry in TFLOBBY_GAME_SERVERS
 #
 # Commands:
-#   hubot rcon [say|message|msg] <message> on <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
-#   hubot rcon send [list|the list|roster|players] on <server> - sends the player roster from the previous lobby to <server>. limited to `rcon` roles.
+#   hubot rcon [say|message|msg] <message> to <server> - sends <message> via rcon to <server>. limited to `rcon` roles.
+#   hubot rcon send [list|the list|roster|players] to <server> - sends the player roster from the previous lobby to <server>. limited to `rcon` roles.
 #   hubot rcon [change map|changelevel|map] on <server> to <mapname> - changes the map on <server> to <mapname>. limited to `rcon` roles.
 #   hubot [[sg|new]|[[sg|new] <mapname>]|[sg|new] random <gamemode> map] - creates a new lobby with the map set to <mapname>. limited to `officer` roles.
 #   hubot [cg|kill] - cancels a running lobby. limited to `officer` roles.
@@ -44,8 +44,8 @@ module.exports = (robot) ->
   robot.respond /(previous|lastgame)/i, (msg) -> community.previous.call(robot, msg)
   robot.respond /(top|today) (maps|players)/i, (msg) -> community.top.call(robot, msg)
 
-  robot.respond /rcon (say|message|msg) (.*) on (.*)/i, (msg) -> rcon.rconSay.call(robot, msg)
-  robot.respond /rcon send (list|the list|roster|players) on (.*)/i, (msg) -> rcon.rconRoster.call(robot, msg)
+  robot.respond /rcon (say|message|msg) (.*) to (.*)/i, (msg) -> rcon.rconSay.call(robot, msg)
+  robot.respond /rcon send (list|the list|roster|players) to (.*)/i, (msg) -> rcon.rconRoster.call(robot, msg)
   robot.respond /rcon (change map|changelevel|map) on (.*) to (.*)/i, (msg) -> rcon.rconMap.call(robot, msg)
 
   robot.respond /((sg|new)|(sg|new) (.*)|(sg|new) random (.*) map)/i, (msg) -> admin.sg.call(robot, msg)
