@@ -15,3 +15,5 @@
 - [x] add a test suite
 - [ ] add test cases for lobby and rcon classes
 - [ ] add arena maps to index.coffee/maps variable
+- [ ] add command that calls cleartimeout on tflobby.lobby.timer for use during the one minute finalising timer
+- [ ] add command that outputs errors stored in tflobby.error namespace
