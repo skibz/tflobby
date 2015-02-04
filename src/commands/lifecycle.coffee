@@ -63,16 +63,15 @@ module.exports =
     previous = @brain.get('tflobby.previous')
 
     if lobby? and previous?
-      currentPlayers = lobby.players()
-      msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{previous.players().join(', ')} ] ::")
+      currentPlayers = Object.keys(lobby.participants)
+      msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{Object.keys(previous.participants).join(', ')} ] ::")
       return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{currentPlayers.length}/#{lobby.slots()} : [ #{currentPlayers.join(', ')} ] ::")
     else if lobby? and not previous?
-      currentPlayers = lobby.players()
+      players = Object.keys(lobby.participants)
       msg.reply(":: no previous pickup data...")
-      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{currentPlayers.length}/#{lobby.slots()} : [ #{currentPlayers.join(', ')} ] ::")
+      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{players.length}/#{lobby.slots()} : [ #{players.join(', ')} ] ::")
     else if not lobby? and previous?
-      previousPlayers = previous.players()
-      msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{previous.players().join(', ')} ] ::")
+      msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{Object.keys(previous.participants).join(', ')} ] ::")
       return msg.reply(":: no pickup is filling - !add or !sg to create one...")
     else
       msg.reply(":: no previous pickup data...")
