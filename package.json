@@ -1,6 +1,6 @@
 {
   "name": "tflobby",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "description": "a lobby script designed for use in hubot",
   "main": "index.coffee",
   "scripts": {
