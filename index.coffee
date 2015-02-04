@@ -1,7 +1,21 @@
 fs   = require 'fs'
 Path = require 'path'
 
+resurrect = (lobby) ->
+  Lobby = require('./src/lobby.coffee')
+
+  return new Lobby(lobby.map, lobby.principal, lobby.server)
+    .set('createdAt', lobby.createdAt)
+    .set('participants', lobby.participants)
+    .set('playersPerSide', lobby.playersPerSide)
+
 module.exports = (robot) ->
+
+  if (lobby = robot.brain.get('tflobby.lobby'))?
+    robot.brain.set('tflobby.lobby', resurrect(lobby))
+
+  if (previous = robot.brain.get('tflobby.previous'))?
+    robot.brain.set('tflobby.previous', resurrect(previous))
 
   # chat.flava
   robot.brain.set(
