@@ -151,7 +151,8 @@ describe 'tfbot', ->
 
         it 'should match with input strings', ->
 
-          expect('format 5').to.match(/format ([0-9]*)$/i)
+          expect('format 123').to.match(/format ([0-9]*)$/i)
+          expect('format abc').to.not.match(/format ([0-9]*)$/i)
 
       describe '!map', ->
 
