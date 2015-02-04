@@ -65,11 +65,11 @@ module.exports =
     if lobby? and previous?
       currentPlayers = Object.keys(lobby.participants)
       msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{Object.keys(previous.participants).join(', ')} ] ::")
-      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{currentPlayers.length}/#{lobby.slots()} : [ #{currentPlayers.join(', ')} ] ::")
+      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{currentPlayers.length}/#{lobby.playersPerSide * 2} : [ #{currentPlayers.join(', ')} ] ::")
     else if lobby? and not previous?
       players = Object.keys(lobby.participants)
       msg.reply(":: no previous pickup data...")
-      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{players.length}/#{lobby.slots()} : [ #{players.join(', ')} ] ::")
+      return msg.reply(":: current : #{lobby.server.name} : #{lobby.map} : #{players.length}/#{lobby.playersPerSide * 2} : [ #{players.join(', ')} ] ::")
     else if not lobby? and previous?
       msg.reply(":: previous : #{new Date(previous.createdAt).toString()} : #{previous.server.name} : #{previous.map} : [ #{Object.keys(previous.participants).join(', ')} ] ::")
       return msg.reply(":: no pickup is filling - !add or !sg to create one...")
