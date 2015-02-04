@@ -15,7 +15,7 @@ module.exports =
 
           return new Rcon server, (ctx) ->
 
-            return ctx.exec "sm_say #{msg.match[2]}", (res) ->
+            return ctx.exec "sm_say [ #{user} via #tfbot ] #{msg.match[2]}", (res) ->
               ctx.close()
               return msg.reply(":: your message was delivered...")
 
