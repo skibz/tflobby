@@ -10,6 +10,9 @@ resurrect = (lobby) ->
     .set('playersPerSide', lobby.playersPerSide)
 
 module.exports = (robot) ->
+  console.log('----------------------------------------------------------------------------------')
+  console.log('initialising tflobby script')
+  console.log('----------------------------------------------------------------------------------')
 
   if (lobby = robot.brain.get('tflobby.lobby'))?
     console.log('attempting to resurrect current!!')
