@@ -12,24 +12,25 @@ resurrect = (lobby) ->
 module.exports = (robot) ->
 
   setTimeout((->
+
     console.log('------------------------------------------')
     console.log('initialising tflobby script')
     console.log('------------------------------------------')
 
-    if (lobby = robot.brain.get('tflobby.lobby'))?
+    if (lobby = @brain.get('tflobby.lobby'))?
       console.log('attempting to resurrect current!!')
       resurrected = resurrect(lobby)
       console.log(resurrected)
-      robot.brain.set('tflobby.lobby', resurrected)
+      @brain.set('tflobby.lobby', resurrected)
 
-    if (previous = robot.brain.get('tflobby.previous'))?
+    if (previous = @brain.get('tflobby.previous'))?
       console.log('attempting to resurrect previous!!')
       resurrected = resurrect(previous)
       console.log(resurrected)
-      robot.brain.set('tflobby.previous', resurrected)
+      @brain.set('tflobby.previous', resurrected)
 
     # chat.flava
-    robot.brain.set(
+    @brain.set(
       'tflobby.chat.flava',
       [
         'you can be my wingman any time.',
@@ -38,7 +39,7 @@ module.exports = (robot) ->
     )
 
     # chat.affirmative
-    robot.brain.set(
+    @brain.set(
       'tflobby.chat.affirmative',
       [
         'yeah,',
@@ -48,7 +49,7 @@ module.exports = (robot) ->
     )
 
     # chat.mistake
-    robot.brain.set(
+    @brain.set(
       'tflobby.chat.mistake',
       [
         'um,',
@@ -124,12 +125,12 @@ module.exports = (robot) ->
       mapsByMode[mode] = [] unless mapsByMode[mode]?
       mapsByMode[mode].push(map)
 
-    robot.brain.set('tflobby.maps.all', maps)
-    robot.brain.set("tflobby.maps.#{mode}", maps) for mode, maps of mapsByMode
-    robot.brain.set('tflobby.maps.popular', popularMaps)
-    robot.brain.set('tflobby.servers.all', servers)
-    robot.brain.set('tflobby.servers.names', Object.keys(servers))
-    robot.brain.set('tflobby.servers.default', defaultServer)
+    @brain.set('tflobby.maps.all', maps)
+    @brain.set("tflobby.maps.#{mode}", maps) for mode, maps of mapsByMode
+    @brain.set('tflobby.maps.popular', popularMaps)
+    @brain.set('tflobby.servers.all', servers)
+    @brain.set('tflobby.servers.names', Object.keys(servers))
+    @brain.set('tflobby.servers.default', defaultServer)
 
     path = Path.resolve(__dirname, 'src')
 
@@ -139,6 +140,6 @@ module.exports = (robot) ->
         console.error("#{path} don't exist")
         process.exit(1)
 
-      robot.loadFile(path, 'index.coffee')
-      robot.parseHelp(Path.join(path, 'index.coffee'))
-  ).bind(@), 5000)
+      @loadFile(path, 'index.coffee')
+      @parseHelp(Path.join(path, 'index.coffee'))
+  ).bind(robot), 5000)
