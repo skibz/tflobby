@@ -12,10 +12,16 @@ resurrect = (lobby) ->
 module.exports = (robot) ->
 
   if (lobby = robot.brain.get('tflobby.lobby'))?
-    robot.brain.set('tflobby.lobby', resurrect(lobby))
+    console.log('attempting to resurrect current!!')
+    resurrected = resurrect(lobby)
+    console.log(resurrected)
+    robot.brain.set('tflobby.lobby', resurrected)
 
   if (previous = robot.brain.get('tflobby.previous'))?
-    robot.brain.set('tflobby.previous', resurrect(previous))
+    console.log('attempting to resurrect previous!!')
+    resurrected = resurrect(previous)
+    console.log(resurrected)
+    robot.brain.set('tflobby.previous', resurrected)
 
   # chat.flava
   robot.brain.set(
