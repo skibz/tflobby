@@ -69,7 +69,7 @@ module.exports =
 
         type = msg.match[2].toLowerCase()
 
-        if type in ['cp', 'ctf', 'koth', 'popular']
+        if type in ['cp', 'arena', 'ctf', 'koth', 'popular']
           random = msg.random(@brain.get("tflobby.maps.#{type}"))
           @brain.set('tflobby.lobby', lobby.set('map', random))
           return msg.reply(":: changed map to `#{random}`...")

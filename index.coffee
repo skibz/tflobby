@@ -61,7 +61,16 @@ module.exports = (robot) ->
     'cp_gullywash_final1',
     'cp_process_final',
     'cp_snakewater_final1',
-    'cp_well'
+    'cp_well',
+    'arena_badlands',
+    'arena_granary',
+    'arena_lumberyard',
+    'arena_nucleus',
+    'arena_offblast_final',
+    'arena_ravine',
+    'arena_sawmill',
+    'arena_watchtower',
+    'arena_well'
   ]
 
   # default popular maps
