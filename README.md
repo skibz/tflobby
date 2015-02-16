@@ -9,6 +9,12 @@ adding and configuring the `hubot-auth` script is recommended if you plan on usi
 
 ##### configuration
 
-refer to [`src/index.coffee`](https://github.com/skibz/tflobby/blob/master/src/index.coffee) for configuration information.
+as outlined in [`src/index.coffee`](https://github.com/skibz/tflobby/blob/master/src/index.coffee), we ought to specify:
 
-this module is yours to do with **as you please** - public domain, muddafuckas.
+- `HUBOT_AUTH_ADMIN` a comma-separated list of nicknames to set as super-admins
+- `TFLOBBY_MAPS` a comma-separated list of map names
+- `TFLOBBY_POPULAR_MAPS` a comma-separated list of popular maps
+- `TFLOBBY_GAME_SERVERS` escaped json array of objects containing the properties `name`, `host`, `port`, `rcon`, `password` and `tv`.
+- `TFLOBBY_DEFAULT_SERVER` name of default server corresponding to an entry in `TFLOBBY_GAME_SERVERS`
+
+and remember, this module is yours to do with **as you please** - [public domain](https://github.com/skibz/tflobby/blob/master/UNLICENSE), muddafuckas!
