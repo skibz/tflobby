@@ -64,6 +64,7 @@ module.exports = (robot) ->
         final = {}
         temp = JSON.parse(process.env.TFLOBBY_GAME_SERVERS)
         final[server.name] = server for server in temp
+        return final
     catch err
       console.error('[tflobby error]', err)
       console.error(
