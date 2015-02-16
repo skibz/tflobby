@@ -60,7 +60,10 @@ module.exports = (robot) ->
     )
 
     try
-      servers = JSON.parse(process.env.TFLOBBY_GAME_SERVERS)
+      servers = do ->
+        final = {}
+        temp = JSON.parse(process.env.TFLOBBY_GAME_SERVERS)
+        final[server.name] = server for server in temp
     catch err
       console.error('[tflobby error]', err)
       console.error(
@@ -71,7 +74,7 @@ module.exports = (robot) ->
 
     defaultServer = process.env.TFLOBBY_DEFAULT_SERVER
 
-    if not defaultServer
+    unless defaultServer
       console.error(
         '[tflobby error] TFLOBBY_DEFAULT_SERVER',
         process.env.TFLOBBY_DEFAULT_SERVER
